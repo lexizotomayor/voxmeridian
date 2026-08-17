@@ -10,7 +10,7 @@
 <body>
   <div class="utility-bar">
     <div class="inner">
-      <span>{{ "now" | readableDate }}</span>
+      <span>{{ page.date | readableDate }}</span>
       <div style="display:flex;gap:20px">
         <a href="/newsletter/">Newsletter</a>
         <a href="/support/">Support Vox Meridian</a>
@@ -39,19 +39,20 @@
 
   <footer class="site-footer">
     <img class="logo" src="/images/vox-logo.png" alt="{{ site.name }}">
-    <div>© {{ "now" | readableDate }} {{ site.name }}. {{ site.tagline }}.</div>
+    <div>© {{ page.date | readableDate }} {{ site.name }}. {{ site.tagline }}.</div>
   </footer>
+
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script>
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/";
-        });
-      }
-    });
-  }
-</script>
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+  </script>
 </body>
 </html>

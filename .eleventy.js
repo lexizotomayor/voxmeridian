@@ -19,6 +19,18 @@ module.exports = function (eleventyConfig) {
     api.getFilteredByGlob("src/articles/*.md").sort((a, b) => b.date - a.date)
   );
 
+  eleventyConfig.addCollection("bySection", (api) => {
+    const articles = api.getFilteredByGlob("src/articles/*.md");
+    const map = {};
+    articles.forEach((a) => {
+      const key = a.data.section;
+      if (!key) return;
+      if (!map[key]) map[key] = [];
+      map[key].push(a);
+    });
+    return map;
+  });
+
   return {
     dir: { input: "src", includes: "_includes", data: "_data", output: "_site" },
     markdownTemplateEngine: "njk",

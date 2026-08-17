@@ -1,7 +1,7 @@
 ---
 layout: base.njk
 pagination:
-  data: sections
+  data: sectionPages
   size: 1
   alias: sectionName
 permalink: "/section/{{ sectionName | slugify }}/"
@@ -12,17 +12,20 @@ eleventyComputed:
   <div class="content-col">
     <h1 class="headline">{{ sectionName }}</h1>
     <div class="grid">
-      {% for article in collections.articles %}
-        {% if article.data.section == sectionName %}
-        <article class="card">
-          <a href="{{ article.url }}">
-            {% if article.data.image %}<img src="{{ article.data.image }}" alt="">{% endif %}
-            <h3>{{ article.data.title }}</h3>
-          </a>
-          <div class="byline">{{ article.data.byline }} · {{ article.data.date | timeAgo }}</div>
-        </article>
-        {% endif %}
-      {% endfor %}
+      {% set list = collections.bySection[sectionName] %}
+      {% if list %}
+        {% for article in list %}
+          <article class="card">
+            <a href="{{ article.url }}">
+              {% if article.data.image %}<img src="{{ article.data.image }}" alt="">{% endif %}
+              <h3>{{ article.data.title }}</h3>
+            </a>
+            <div class="byline">{{ article.data.byline }} · {{ article.data.date | timeAgo }}</div>
+          </article>
+        {% endfor %}
+      {% else %}
+        <p style="font-family:var(--sans);color:var(--ink-faint)">No stories in this section yet.</p>
+      {% endif %}
     </div>
   </div>
   <aside class="sidebar">
