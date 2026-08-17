@@ -1,0 +1,31 @@
+---
+layout: base.njk
+pagination:
+  data: sections
+  size: 1
+  alias: sectionName
+permalink: "/section/{{ sectionName | slugify }}/"
+eleventyComputed:
+  title: "{{ sectionName }}"
+---
+<main>
+  <div class="content-col">
+    <h1 class="headline">{{ sectionName }}</h1>
+    <div class="grid">
+      {% for article in collections.articles %}
+        {% if article.data.section == sectionName %}
+        <article class="card">
+          <a href="{{ article.url }}">
+            {% if article.data.image %}<img src="{{ article.data.image }}" alt="">{% endif %}
+            <h3>{{ article.data.title }}</h3>
+          </a>
+          <div class="byline">{{ article.data.byline }} · {{ article.data.date | timeAgo }}</div>
+        </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <aside class="sidebar">
+    <div class="ad-slot" style="height:250px"><span>Advertisement</span><span>300 × 600</span></div>
+  </aside>
+</main>

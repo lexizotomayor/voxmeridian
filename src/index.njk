@@ -1,0 +1,51 @@
+---
+layout: base.njk
+title: Home
+---
+<main>
+  <div class="content-col">
+    {% set latest = collections.articles[0] %}
+    {% if latest %}
+    <article style="padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:32px">
+      <span class="kicker">{{ latest.data.section }}</span>
+      <h1 class="headline"><a href="{{ latest.url }}">{{ latest.data.title }}</a></h1>
+      <p class="dek">{{ latest.data.dek }}</p>
+      <div class="byline-row" style="border:none;margin:0;padding:0">
+        <div class="byline-name">{{ latest.data.byline }}</div>
+      </div>
+    </article>
+    {% endif %}
+
+    <div class="section-head"><h2>Latest</h2></div>
+    <div class="grid">
+      {% for article in collections.articles %}
+        {% if loop.index0 > 0 %}
+        <article class="card">
+          <a href="{{ article.url }}">
+            {% if article.data.image %}<img src="{{ article.data.image }}" alt="">{% endif %}
+            <h3>{{ article.data.title }}</h3>
+          </a>
+          <div class="byline">{{ article.data.byline }} · {{ article.data.date | timeAgo }}</div>
+        </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-box">
+      <h2>Most Read</h2>
+      {% for article in collections.articles | reverse %}
+        {% if loop.index0 < 5 %}
+        <a class="most-read-row" href="{{ article.url }}" style="color:var(--ink)">
+          <span class="num">{{ loop.index }}</span>
+          <span>{{ article.data.title }}</span>
+        </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="ad-slot" style="height:250px">
+      <span>Advertisement</span><span>300 × 600</span>
+    </div>
+  </aside>
+</main>

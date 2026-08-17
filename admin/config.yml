@@ -1,0 +1,27 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "src/images"
+public_folder: "/images"
+
+collections:
+  - name: "articles"
+    label: "Articles"
+    folder: "src/articles"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - label: "Section"
+        name: "section"
+        widget: "select"
+        options: ["Business", "Security & Diplomacy", "Politics", "Pacific", "US", "Opinion", "Explainers"]
+      - { label: "Byline (writer name)", name: "byline", widget: "string" }
+      - { label: "Byline role", name: "byline_role", widget: "string" }
+      - { label: "Author photo", name: "author_photo", widget: "image", required: false }
+      - { label: "Publish date", name: "date", widget: "datetime" }
+      - { label: "Dek (subheadline)", name: "dek", widget: "text" }
+      - { label: "Lead image", name: "image", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+    layout: article.njk

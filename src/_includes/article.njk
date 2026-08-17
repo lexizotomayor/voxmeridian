@@ -1,0 +1,31 @@
+---
+layout: base.njk
+---
+<main>
+  <article class="content-col">
+    <a href="/" class="back-link">← Back to Home</a>
+    <span class="kicker">{{ section }}</span>
+    <h1 class="headline">{{ title }}</h1>
+    <p class="dek">{{ dek }}</p>
+
+    <div class="byline-row">
+      {% if author_photo %}<img class="avatar" src="{{ author_photo }}" alt="{{ byline }}">{% endif %}
+      <div>
+        <div class="byline-name">By {{ byline }}</div>
+        <div class="byline-meta">{{ byline_role }} · {{ date | readableDate }}</div>
+      </div>
+    </div>
+
+    {% if image %}<img src="{{ image }}" alt="" style="border-radius:4px;margin-bottom:24px">{% endif %}
+
+    <div class="article-body">
+      {{ content | safe }}
+    </div>
+  </article>
+
+  <aside class="sidebar">
+    <div class="ad-slot" style="height:250px">
+      <span>Advertisement</span><span>300 × 600</span>
+    </div>
+  </aside>
+</main>

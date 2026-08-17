@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} · {{ site.name }}</title>
+  <meta name="description" content="{{ description or site.tagline }}">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="utility-bar">
+    <div class="inner">
+      <span>{{ "now" | readableDate }}</span>
+      <div style="display:flex;gap:20px">
+        <a href="/newsletter/">Newsletter</a>
+        <a href="/support/">Support Vox Meridian</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <a href="/"><img class="logo" src="/images/vox-logo.png" alt="{{ site.name }}"></a>
+    <nav class="primary-nav">
+      <a href="/">Home</a>
+      {% for sec in sections %}
+        <a href="/section/{{ sec | slugify }}/">{{ sec }}</a>
+      {% endfor %}
+      <a href="/contact/">Contact</a>
+    </nav>
+  </header>
+
+  <div style="display:flex;justify-content:center;padding:18px 24px 0">
+    <div class="ad-slot" style="width:100%;max-width:728px;height:90px">
+      <span>Advertisement</span><span>728 × 90</span>
+    </div>
+  </div>
+
+  {{ content | safe }}
+
+  <footer class="site-footer">
+    <img class="logo" src="/images/vox-logo.png" alt="{{ site.name }}">
+    <div>© {{ "now" | readableDate }} {{ site.name }}. {{ site.tagline }}.</div>
+  </footer>
+</body>
+</html>
