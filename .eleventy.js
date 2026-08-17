@@ -14,6 +14,7 @@ module.exports = function (eleventyConfig) {
     if (hours < 24) return hours + "h ago";
     return Math.floor(hours / 24) + "d ago";
   });
+  eleventyConfig.addFilter("yearOnly", (dateObj) => new Date(dateObj).getFullYear());
 
   eleventyConfig.addCollection("articles", (api) =>
     api.getFilteredByGlob("src/articles/*.md").sort((a, b) => b.date - a.date)
