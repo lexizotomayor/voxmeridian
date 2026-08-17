@@ -1,4 +1,4 @@
-# Handoff: Vox Meridian News Website
+# Vox Meridian News Website
 
 ## Overview
 Vox Meridian is a Pacific/US-focused news site (business, security & diplomacy, politics) with daily
