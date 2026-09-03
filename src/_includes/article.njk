@@ -112,24 +112,18 @@ layout: base.njk
       <div>
         <h2 class="rule-head">More on this</h2>
         <div class="sidelist">
-          {% set shown = [] %}
-          {% for post in collections.articles %}
-            {% if post.data.section == section and post.url != page.url and shown.length < 4 %}
-              {% set _ = shown.push(post) %}
-              <a href="{{ post.url }}">
-                <div class="kicker" style="margin-bottom:6px">{{ post.data.section }}</div>
-                <div class="sidelist__title">{{ post.data.title }}</div>
-                <div class="sidelist__meta">{{ post.date | timeAgo }}</div>
-              </a>
-            {% endif %}
+          {% for post in collections.articles | where('section', section) | exclude('url', page.url) | limit(4) %}
+          <a href="{{ post.url }}">
+            <div class="kicker" style="margin-bottom:6px">{{ post.data.section }}</div>
+            <div class="sidelist__title">{{ post.data.title }}</div>
+            <div class="sidelist__meta">{{ post.date | timeAgo }}</div>
+          </a>
           {% endfor %}
-          {% for it in wire.all %}
-            {% if it.section == section and loop.index0 < 3 %}
-            <a href="{{ it.url }}" target="_blank" rel="noopener">
-              <div class="kicker" style="margin-bottom:6px">Via {{ it.source }}</div>
-              <div class="sidelist__title">{{ it.title }}</div>
-            </a>
-            {% endif %}
+          {% for it in wire.all | where('section', section) | limit(3) %}
+          <a href="{{ it.url }}" target="_blank" rel="noopener">
+            <div class="kicker" style="margin-bottom:6px">Via {{ it.source }}</div>
+            <div class="sidelist__title">{{ it.title }}</div>
+          </a>
           {% endfor %}
         </div>
       </div>
@@ -137,13 +131,11 @@ layout: base.njk
       <div>
         <h2 class="rule-head">Explainers</h2>
         <div class="sidelist">
-          {% for ex in collections.explainers %}
-            {% if loop.index0 < 3 %}
-            <a href="{{ ex.url }}">
-              <div class="kicker" style="margin-bottom:6px">No. {{ ex.data.number }}</div>
-              <div class="sidelist__title">{{ ex.data.title }}</div>
-            </a>
-            {% endif %}
+          {% for ex in collections.explainers | limit(3) %}
+          <a href="{{ ex.url }}">
+            <div class="kicker" style="margin-bottom:6px">No. {{ ex.data.number }}</div>
+            <div class="sidelist__title">{{ ex.data.title }}</div>
+          </a>
           {% endfor %}
         </div>
       </div>

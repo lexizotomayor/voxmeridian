@@ -26,6 +26,16 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("byName", (list, name) =>
     (list || []).find((x) => x && x.name === name)
   );
+  // Slicing with "loop.index0 < n" inside an {% if %} counts position in the
+  // WHOLE list, not matches — so a filtered list silently comes back empty.
+  // Filter first, then limit.
+  eleventyConfig.addFilter("limit", (list, n) => (list || []).slice(0, n));
+  eleventyConfig.addFilter("where", (list, key, val) =>
+    (list || []).filter((x) => (x.data ? x.data[key] : x[key]) === val)
+  );
+  eleventyConfig.addFilter("exclude", (list, key, val) =>
+    (list || []).filter((x) => (x.data ? x.data[key] : x[key]) !== val)
+  );
   eleventyConfig.addFilter("urlencode", (s) => encodeURIComponent(String(s || "")));
   eleventyConfig.addFilter("readtime", (body) => {
     const words = String(body || "").split(/\s+/).length;

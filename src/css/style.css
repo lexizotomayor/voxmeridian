@@ -134,8 +134,9 @@ figcaption {
 }
 .masthead__bar {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 24px; padding-top: 12px; padding-bottom: 12px;
+  gap: clamp(16px, 2vw, 32px); padding-top: 12px; padding-bottom: 12px;
 }
+.masthead__bar .wordmark { flex: 0 0 auto; }
 .wordmark {
   color: var(--areia); font-size: clamp(22px, 2.3vw, 30px); font-weight: 800;
   letter-spacing: -0.035em; line-height: 1; text-transform: lowercase;
@@ -143,10 +144,19 @@ figcaption {
 .wordmark em { color: var(--terra-light); font-style: normal; }
 .wordmark:hover { color: var(--areia); }
 
-.topnav { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: flex-end; }
+/* One line, always. Nine items do not fit at every width, so the row scrolls
+   sideways instead of wrapping — wrapping breaks the wordmark's baseline and
+   doubles the masthead height. Labels never break mid-word. */
+.topnav {
+  display: flex; flex-wrap: nowrap; justify-content: flex-end;
+  gap: clamp(12px, 1.3vw, 20px); min-width: 0;
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.topnav::-webkit-scrollbar { display: none; }
 .topnav a {
   color: var(--areia); font-size: 11px; font-weight: 800;
   letter-spacing: 0.14em; text-transform: uppercase;
+  white-space: nowrap; flex: 0 0 auto; padding: 3px 0;
 }
 .topnav a:hover { color: var(--terra-light); }
 .topnav a[aria-current='page'] { color: var(--terra-light); }
@@ -271,15 +281,16 @@ main { display: block; }
 .nameplate__word {
   writing-mode: vertical-rl; font-size: clamp(82px, 10vw, 168px); font-weight: 800;
   letter-spacing: -0.055em; line-height: 0.95; white-space: nowrap; text-transform: lowercase;
+  /* vertical-rl + nowrap means every extra character adds a full em of HEIGHT.
+     Keep the word short (one word) and cap it so a longer string can never
+     stretch the lead block past the viewport. */
+  max-height: 78vh; overflow: hidden;
 }
 .nameplate__word em { color: var(--terra-dark); font-style: normal; }
-.nameplate__word-sub {
-  font-size: clamp(20px, 2.4vw, 34px); font-weight: 700;
-  letter-spacing: -0.01em; vertical-align: top;
-}
 .nameplate__tag {
   writing-mode: vertical-rl; font-size: clamp(17px, 1.7vw, 24px); font-weight: 700;
   letter-spacing: 0.14em; text-transform: uppercase; color: var(--esmeralda); white-space: nowrap;
+  max-height: 78vh; overflow: hidden;
 }
 
 .storylist { display: flex; flex-direction: column; }
@@ -597,7 +608,7 @@ main { display: block; }
   body { font-size: 17px; }
 
   .masthead__bar { flex-direction: column; align-items: stretch; gap: 12px; }
-  .topnav { justify-content: flex-start; gap: 8px 18px; }
+  .topnav { justify-content: flex-start; gap: 18px; }
 
   .datebar__inner { flex-direction: column; align-items: stretch; }
   .datebar__date {

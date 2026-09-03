@@ -21,7 +21,7 @@ eleventyExcludeFromCollections: true
         </div>
       </div>
       <div class="nameplate" aria-hidden="true">
-        <div class="nameplate__word"><em>vox</em><span class="nameplate__word-sub">meridian</span></div>
+        <div class="nameplate__word"><em>vox</em></div>
         <div class="nameplate__tag">{{ site.tagline }}</div>
       </div>
     </div>
@@ -70,11 +70,14 @@ eleventyExcludeFromCollections: true
       </div>
       {% endif %}
 
-      <h2 class="rule-head"{% if collections.articles.length > 1 %} style="margin-top:clamp(34px,3.6vw,50px)"{% endif %}>The Wire · {{ wire.days[0].label }}</h2>
+      {# Draw across days, not out of day 0 — a slow news day can leave the newest
+         label holding a single item, which reads as a broken page. #}
+      <h2 class="rule-head"{% if collections.articles.length > 1 %} style="margin-top:clamp(34px,3.6vw,50px)"{% endif %}>The Wire · {{ wire.all[0].day }}</h2>
       <p class="rule-head__note">What other newsrooms reported across the region. Each item names the outlet that did the work and links to the original — the summaries are ours, the reporting is theirs.</p>
 
       <div class="wire">
-        {% for it in wire.today %}
+        {% for it in wire.all | limit(6) %}
+          {% if true %}
         <article class="wire__item">
           <div class="wire__stamp">
             <div class="wire__time">{{ it.time }}</div>
@@ -92,6 +95,7 @@ eleventyExcludeFromCollections: true
             </div>
           </div>
         </article>
+          {% endif %}
         {% endfor %}
       </div>
 
@@ -104,8 +108,8 @@ eleventyExcludeFromCollections: true
       <h2 class="rule-head" style="margin-top:clamp(34px,3.6vw,50px)">Podcast · {{ podcast.title }}</h2>
       {% if podcast.sample %}<p class="rule-head__note">{{ podcast.caveat }}</p>{% endif %}
       <div class="podcast">
-        {% for ep in podcast.episodes %}
-          {% if loop.index0 < 4 %}
+        {% for ep in podcast.episodes | limit(4) %}
+          {% if true %}
           <a class="pod" href="{% if ep.audio %}{{ ep.audio }}{% else %}/podcast/{% endif %}">
             <span class="pod__play" aria-hidden="true">&#9654;</span>
             <span>
@@ -121,8 +125,8 @@ eleventyExcludeFromCollections: true
       {% if collections.columns.length %}
       <h2 class="rule-head" style="margin-top:clamp(34px,3.6vw,50px)">Opinion</h2>
       <div class="storylist">
-        {% for col in collections.columns %}
-          {% if loop.index0 < 3 %}
+        {% for col in collections.columns | limit(3) %}
+          {% if true %}
           <article class="story" style="grid-template-columns:auto minmax(0,1fr)">
             {% if col.data.authorPhoto %}
             <div class="mount mount--sm" style="width:64px">

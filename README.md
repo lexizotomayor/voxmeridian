@@ -39,7 +39,9 @@ Five things, all of them in the design mockups and none of them in v2's code.
 **Photo-hero homepage.** `src/index.njk` leads with our own work — the newest reported story
 if there is one, the newest explainer otherwise — as a full lead block: kicker, oversized
 headline in Areia, byline, then a torn-paper photo beside the dek and the read link. The
-vertical `vox meridian` nameplate sits in the right rail beside the headline. Under it, a
+vertical `vox` nameplate sits in the right rail beside the headline — keep that to one short
+word, because `writing-mode: vertical-rl` turns every extra character into a full em of
+height. The CSS caps it at 78vh as a backstop. Under it, a
 **More stories** list with 4:3 thumbnails on the left and byline/time hard right, then The
 Wire, then the podcast band, then Opinion. Wire-first still holds: the lead is ours, the wire
 is the day's volume.
@@ -69,6 +71,22 @@ the file ships `sample: true`, which prints the caveat line on both the homepage
 `/podcast/`, and every episode has `audio: null`, which greys out its play button. Set
 `show: false` to remove it from the site in one edit, or replace the array and set
 `sample: false` when you have actually recorded something.
+
+---
+
+## Before this looks like the mockups
+
+`src/articles/` is empty — only `.gitkeep`. Until there is at least one file in it:
+
+- the homepage leads with the newest **explainer** instead of a reported story
+- the **More stories** band does not render at all
+- no article pages build, so the richer article template, the author card, the drop cap and
+  the share row are not on the live site yet
+- the `contact` form deploys without the hidden `about` field, because that field only exists
+  inside the article template
+
+Add one `src/articles/your-slug.md` with `layout: article.njk`, `title`, `dek`, `section`,
+`author`, `date`, and `image`, and all five of those come back on the next deploy.
 
 ---
 

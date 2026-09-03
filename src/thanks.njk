@@ -56,8 +56,8 @@ eleventyExcludeFromCollections: true
       <div>
         <h2 class="rule-head">While you are here</h2>
         <div class="sidelist">
-          {% for post in collections.everything %}
-            {% if loop.index0 < 4 %}
+          {% for post in collections.everything | limit(4) %}
+            {% if true %}
             <a href="{{ post.url }}">
               <div class="kicker" style="margin-bottom:6px">{{ post.data.section or 'Opinion' }}</div>
               <div class="sidelist__title">{{ post.data.title }}</div>

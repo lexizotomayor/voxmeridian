@@ -65,8 +65,8 @@ tabs: true
       <div>
         <h2 class="rule-head">More columns</h2>
         <div class="sidelist">
-          {% for col in collections.columns %}
-            {% if col.url != page.url and loop.index0 < 5 %}
+          {% for col in collections.columns | exclude('url', page.url) | limit(5) %}
+            {% if true %}
             <a href="{{ col.url }}">
               <div class="kicker" style="margin-bottom:6px">{{ col.data.author }}</div>
               <div class="sidelist__title">{{ col.data.title }}</div>

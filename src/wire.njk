@@ -81,8 +81,8 @@ eleventyExcludeFromCollections: true
       <div>
         <h2 class="rule-head">Our own work</h2>
         <div class="sidelist">
-          {% for ex in collections.explainers %}
-            {% if loop.index0 < 3 %}
+          {% for ex in collections.explainers | limit(3) %}
+            {% if true %}
             <a href="{{ ex.url }}">
               <div class="kicker" style="margin-bottom:6px">Explainer No. {{ ex.data.number }}</div>
               <div class="sidelist__title">{{ ex.data.title }}</div>
