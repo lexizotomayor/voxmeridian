@@ -151,6 +151,7 @@ figcaption {
   color: var(--areia); font-size: 30px; font-weight: 800;
   letter-spacing: -0.035em; line-height: 1; text-transform: lowercase;
 }
+.mhead__mark em { color: var(--terra-light); font-style: normal; }
 .mhead__burger {
   width: 46px; height: 46px; flex: 0 0 46px; border-radius: 8px;
   border: 1px solid rgba(252, 239, 211, 0.35);
