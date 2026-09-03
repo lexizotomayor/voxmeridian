@@ -607,6 +607,8 @@ main { display: block; }
 .panel--light .field__label { color: var(--meta); }
 .panel--light input, .panel--light textarea { border-bottom-color: var(--hairline); color: var(--esmeralda); }
 .panel--light input:focus, .panel--light textarea:focus { border-bottom-color: var(--terra-dark); }
+.panel--light .panel__title { color: var(--esmeralda); }
+.panel--light .panel__text { color: var(--meta); }
 
 .btn {
   display: inline-block; appearance: none; border: none; cursor: pointer;

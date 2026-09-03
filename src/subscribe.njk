@@ -9,41 +9,26 @@ eleventyExcludeFromCollections: true
 
   <div class="hero">
     <div>
-      <div class="chip">Subscribe</div>
-      <h1 class="hero__title">Three stories every weekday, free</h1>
-      <p class="hero__dek">The daily brief costs nothing and never will. Paid plans exist because reporting from four bureaus costs money, not because we intend to put a wall in front of the news.</p>
+      <div class="chip">Support</div>
+      <h1 class="hero__title">Reporting costs money. Ads alone won't cover the Pacific</h1>
+      <p class="hero__dek">Free to read, funded by readers. Every subscription pays for travel, translation, and records requests.</p>
     </div>
     <div class="rail" aria-hidden="true">
       <div class="rail__stack">
-        <div class="rail__label">No paywall on news</div>
+        <div class="rail__label">{{ site.founded }}</div>
         <div class="rail__line"></div>
-        <div class="rail__sub">Reader funded</div>
+        <div class="rail__sub">Why it matters</div>
       </div>
-      <div class="rail__word">join</div>
+      <div class="rail__word">why</div>
     </div>
   </div>
 
   <div class="cols">
     <div class="cols__main">
 
-      <section class="panel panel--split">
-        <div class="panel__rail">Daily brief</div>
-        <div>
-          <h2 class="panel__title">Start with the free brief</h2>
-          <p class="panel__text">Three stories that matter across the Pacific and Washington, in your inbox by 6am ChST. One-click unsubscribe at the top of every issue.</p>
-          <form name="newsletter" method="POST" action="/thanks/?form=newsletter" data-netlify="true" netlify-honeypot="bot-field">
-            <p class="vh"><label>Do not fill this in <input name="bot-field"></label></p>
-            <div class="field-row">
-              <label class="field"><span class="field__label">Your name</span><input type="text" name="name" required></label>
-              <label class="field"><span class="field__label">Email</span><input type="email" name="email" required></label>
-            </div>
-            <button type="submit" class="btn btn--light">Send me the brief</button>
-          </form>
-        </div>
-      </section>
+      <p class="prose" style="font-size:20px;line-height:1.72;font-weight:400;color:var(--body);margin-bottom:30px">Vox Meridian is free to read. Subscriptions pay for reporting trips, translators, and public-records requests across the Pacific — nothing else.</p>
 
-      <h2 class="rule-head" style="margin-top:clamp(34px,3.6vw,50px)">Plans that fund the reporting</h2>
-      <div class="plans" style="margin-top:22px">
+      <div class="plans">
         {% for p in plans %}
         <div class="plan plan--{{ p.tone }}">
           <div class="kicker">{{ p.name }}</div>
@@ -55,6 +40,16 @@ eleventyExcludeFromCollections: true
         {% endfor %}
       </div>
 
+      <section class="panel panel--light" style="margin-top:clamp(30px,3.2vw,44px)">
+        <h2 class="panel__title">The daily brief</h2>
+        <p class="panel__text">One email each weekday morning — the three stories that matter across the Pacific and Washington. Free, no paywall.</p>
+        <form name="newsletter" method="POST" action="/thanks/?form=newsletter" data-netlify="true" netlify-honeypot="bot-field" style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">
+          <p class="vh"><label>Do not fill this in <input name="bot-field"></label></p>
+          <label class="field" style="flex:1 1 240px;min-width:0"><span class="field__label">Email address</span><input type="email" name="email" required placeholder="you@example.com"></label>
+          <button type="submit" class="btn">Sign up free</button>
+        </form>
+      </section>
+
       <div class="prose" style="margin-top:clamp(30px,3.2vw,44px)">
         <h2>What your money does not buy</h2>
         <p>Influence over coverage. Subscribers do not see stories early, do not get to kill one, and are not told who we are talking to. If that is what you are paying for, we are the wrong outlet.</p>
@@ -62,17 +57,28 @@ eleventyExcludeFromCollections: true
     </div>
 
     <aside class="cols__aside">
-      <div class="panel">
-        <div class="kicker kicker--light" style="margin-bottom:12px">A note on your details</div>
-        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg)">We store your address to send what you asked for and nothing else. No trackers in our email, no list rentals, and one-click unsubscribe in every issue.</p>
+      <div>
+        <h2 class="rule-head">Elsewhere on Vox</h2>
+        <div class="sidelist">
+          {% for post in collections.articles | limit(4) %}
+          <a href="{{ post.url }}">
+            <div class="kicker" style="margin-bottom:6px">{{ post.data.section }}</div>
+            <div class="sidelist__title">{{ post.data.title }}</div>
+            <div class="sidelist__meta">{{ post.date | timeAgo }}</div>
+          </a>
+          {% endfor %}
+        </div>
       </div>
 
-      <div>
-        <h2 class="rule-head">Other ways to read</h2>
-        <div class="sidelist">
-          <a href="/feed.xml"><div class="sidelist__title">RSS feed</div><div class="sidelist__meta">Everything we publish</div></a>
-          <a href="/rss/"><div class="sidelist__title">Feeds by section</div><div class="sidelist__meta">Pick your beats</div></a>
-          <a href="/wire/"><div class="sidelist__title">The Wire</div><div class="sidelist__meta">Updated each morning</div></a>
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">Where we report from</div>
+        <div class="bureaus">
+          {% for b in bureaus %}
+          <div class="bureaus__row">
+            <span class="bureaus__city">{{ b.city }}</span>
+            <span class="bureaus__beat">{{ b.beat }}</span>
+          </div>
+          {% endfor %}
         </div>
       </div>
     </aside>

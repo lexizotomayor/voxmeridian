@@ -6,7 +6,12 @@ tabs: true
 
   <div class="hero">
     <div>
-      <div class="kicker">Opinion · {{ author }}</div>
+      <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px">
+        <div class="kicker" style="margin:0">Opinion</div>
+        {% if columnName %}<div style="font-size:15px;font-weight:800;color:var(--terra-light)">{{ columnName }}</div>{% endif %}
+        {% if cadence %}<div class="kicker kicker--light" style="margin:0">{{ cadence }}</div>{% endif %}
+      </div>
+      <div class="kicker" style="margin-bottom:10px">{{ author }}</div>
       <h1 class="hero__title">{{ title }}</h1>
       <p class="hero__dek">{{ dek }}</p>
     </div>
@@ -63,14 +68,29 @@ tabs: true
 
     <aside class="cols__aside">
       <div>
-        <h2 class="rule-head">More columns</h2>
+        <h2 class="rule-head">{% if columnName %}Recent in {{ columnName }}{% else %}More columns{% endif %}</h2>
         <div class="sidelist">
-          {% for col in collections.columns | exclude('url', page.url) | limit(5) %}
-            {% if true %}
+          {% set related = collections.columns | exclude('url', page.url) %}
+          {% if columnName %}{% set related = related | where('columnName', columnName) %}{% endif %}
+          {% for col in related | limit(5) %}
             <a href="{{ col.url }}">
               <div class="kicker" style="margin-bottom:6px">{{ col.data.author }}</div>
               <div class="sidelist__title">{{ col.data.title }}</div>
               <div class="sidelist__meta">{{ col.date | timeAgo }}</div>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="rule-head">Our columns</h2>
+        <div class="sidelist">
+          {% for c in columnMastheads %}
+            {% set latest = collections.columns | where('columnName', c.name) | limit(1) %}
+            {% if latest.length %}
+            <a href="{{ latest[0].url }}">
+              <div class="sidelist__title"{% if c.name == columnName %} style="color:var(--terra-light)"{% endif %}>{{ c.name }}</div>
+              <div class="sidelist__meta">{{ c.author }} · {{ c.beat }}</div>
             </a>
             {% endif %}
           {% endfor %}

@@ -1,6 +1,8 @@
 ---
 layout: column.njk
 sample: true
+columnName: "The Meridian Line"
+cadence: "Weekly · Fridays"
 title: "A pact the islands cannot suspend is not a partnership"
 dek: "Every agreement in this region should answer one question: what happens if the smaller party wants out? This one does not answer it."
 author: "Gemma Casas"
