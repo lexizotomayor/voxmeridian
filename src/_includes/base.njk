@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
+<body{% if page.url == '/' %} class="home"{% endif %}>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <filter id="tornEdge">
