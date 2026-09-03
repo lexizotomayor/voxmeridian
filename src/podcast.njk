@@ -1,0 +1,81 @@
+---
+layout: base.njk
+title: Podcast
+dek: One conversation a week about the documents behind the week's news.
+permalink: /podcast/
+eleventyExcludeFromCollections: true
+---
+<div class="shell page">
+
+  <div class="hero">
+    <div>
+      <div class="chip">Podcast</div>
+      <h1 class="hero__title">{{ podcast.title }}</h1>
+      <p class="hero__dek">{{ podcast.blurb }}</p>
+    </div>
+    <div class="rail" aria-hidden="true">
+      <div class="rail__stack">
+        <div class="rail__label">{{ podcast.episodes.length }} episodes</div>
+        <div class="rail__line"></div>
+        <div class="rail__sub">Weekly</div>
+      </div>
+      <div class="rail__word">heard</div>
+    </div>
+  </div>
+
+  {% if podcast.sample %}
+  <div class="notice">{{ podcast.caveat }}</div>
+  {% endif %}
+
+  <div class="cols">
+    <div class="cols__main">
+      <h2 class="rule-head">Episodes</h2>
+      <div class="storylist">
+        {% for ep in podcast.episodes %}
+        <article class="episode">
+          <div class="episode__num">{{ ep.ep }}</div>
+          <div>
+            <h3 class="episode__title">{{ ep.title }}</h3>
+            <p class="episode__dek">{{ ep.dek }}</p>
+            <div class="story__meta">{{ ep.len }}{% if not ep.audio %} · not yet recorded{% endif %}</div>
+          </div>
+          {% if ep.audio %}
+          <a class="pod__play" href="{{ ep.audio }}" aria-label="Play episode {{ ep.ep }}">&#9654;</a>
+          {% else %}
+          <span class="pod__play pod__play--off" aria-hidden="true">&#9654;</span>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+
+      <section class="panel panel--split" style="margin-top:clamp(36px,3.6vw,52px)">
+        <div class="panel__rail">Listen</div>
+        <div>
+          <h2 class="panel__title">Get the Briefing when it lands</h2>
+          <p class="panel__text">We will email you when the first episode goes out, and nothing else. The feed goes up at the same time.</p>
+          <a href="/subscribe/" class="btn btn--light">Tell me when it starts</a>
+        </div>
+      </section>
+    </div>
+
+    <aside class="cols__aside">
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">What it is</div>
+        <p class="panel__note">Not a news roundup. Each episode takes one document — a clause, a loan agreement, a licence schedule — and reads it out loud with the person who reported on it.</p>
+      </div>
+
+      <div>
+        <h2 class="rule-head">Explainers to read first</h2>
+        <div class="sidelist">
+          {% for ex in collections.explainers %}
+          <a href="{{ ex.url }}">
+            <div class="kicker" style="margin-bottom:6px">No. {{ ex.data.number }}</div>
+            <div class="sidelist__title">{{ ex.data.title }}</div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</div>

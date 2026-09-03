@@ -1,4 +1,4 @@
-# Vox Meridian — v2 site
+# Vox Meridian — v3 site
 
 Eleventy + Netlify. Design language: Neue Typografie (see `CLAUDE.md` in the design project for
 the shipping palette). Deployed at **voxmeridian.online**.
@@ -11,14 +11,14 @@ Netlify is already connected to `lexizotomayor/voxmeridian` and builds on every 
 `main` — build command `npx @11ty/eleventy`, publish directory `_site`, base directory blank.
 You do not touch Netlify at all. You put files in GitHub; Netlify rebuilds.
 
-1. Download this folder (`design_handoff_v2`) and unzip it.
+1. Download this folder (`design_handoff_v3`) and unzip it.
 2. Go to **github.com/lexizotomayor/voxmeridian**, make sure the branch selector says `main`.
 3. **Add file → Upload files.**
 4. Drag in the *contents* of the unzipped folder — `src/`, `admin/`, `.eleventy.js`,
    `netlify.toml`, `package.json`, `README.md`. Not the folder itself: the files must land at
    the repository root, next to where `package.json` already sits.
 5. GitHub will ask about replacing existing files. Replace them — that is the point.
-6. Commit message: `v2 design: templates, styles, wire`. Click **Commit changes**.
+6. Commit message: `v3 design: photo hero, podcast, tabs, richer article`. Click **Commit changes**.
 7. Netlify starts building within seconds. Watch **Deploys**. About two minutes.
 
 If the deploy fails, open the log and read the last ten lines — it is almost always a typo in a
@@ -29,6 +29,46 @@ template name or a missing front-matter field, and the log names the file.
 The v1 templates, if any are still there: `src/section.njk` (replaced by `sections.njk`),
 `src/newsletter.njk` and `src/support.njk` (replaced by `subscribe.njk`), and
 `src/_includes/base.njk`'s old version (overwritten).
+
+---
+
+## What v3 adds over v2
+
+Five things, all of them in the design mockups and none of them in v2's code.
+
+**Photo-hero homepage.** `src/index.njk` leads with our own work — the newest reported story
+if there is one, the newest explainer otherwise — as a full lead block: kicker, oversized
+headline in Areia, byline, then a torn-paper photo beside the dek and the read link. The
+vertical `vox meridian` nameplate sits in the right rail beside the headline. Under it, a
+**More stories** list with 4:3 thumbnails on the left and byline/time hard right, then The
+Wire, then the podcast band, then Opinion. Wire-first still holds: the lead is ours, the wire
+is the day's volume.
+
+**Full ticker.** `src/_data/ticker.js` now carries nine instruments and `base.njk` renders the
+row twice inside `.ticker__marquee`, which translates -50% on a 46-second linear loop — so it
+scrolls seamlessly instead of sitting still. The second copy is `aria-hidden`. On phones and
+for `prefers-reduced-motion` the animation is off and the row swipes instead.
+
+**Tabbed Opinion / Explainers.** Any page with `tabs: true` in its front matter gets the strip
+under the date bar; the active tab comes from the URL. `/opinion/`, `/explainers/`, and every
+column and explainer page carry it. These are two real pages, not a JavaScript toggle, so the
+tabs survive a reload, work with the back button, and deep-link.
+
+**Richer article template.** `_includes/article.njk` now runs: section chip, hero headline with
+the vertical display word in the rail, 21:9 torn-paper lead photo with caption, a double-ruled
+stamp line (relative time · date · read time), a terracotta drop cap on the first paragraph,
+the share row, and a feedback form that posts to the `contact` form with the story title
+attached as a hidden `about` field — so newsroom mail arrives with its context. The sidebar
+carries an author card built from `_data/staff.js` (matched on the byline via the new
+`byName` filter, so a writer's photo and bio update everywhere at once), More on this — our
+stories in the section first, then wire items on the same beat — explainers, and the brief.
+
+**Podcast.** `src/_data/podcast.js` plus `/podcast/`. The band appears on the homepage only
+while `show: true` and there is at least one episode. **The podcast does not exist yet**, so
+the file ships `sample: true`, which prints the caveat line on both the homepage and
+`/podcast/`, and every episode has `audio: null`, which greys out its play button. Set
+`show: false` to remove it from the site in one edit, or replace the array and set
+`sample: false` when you have actually recorded something.
 
 ---
 
@@ -69,7 +109,7 @@ Wire items carry a `section` field, so:
 - `/wire/` shows everything, newest first, each item tagged with its section
 - `/business/`, `/security-and-diplomacy/`, `/politics/` show our own reporting first (when
   there is any), then the wire items for that section
-- the homepage leads with an explainer — our own work — and runs the day's wire beneath it
+- the homepage leads with our own work — newest reported story, else newest explainer — and runs the day's wire beneath it
 
 Adding an item: edit `src/_data/wire.js` (or the CMS "The Wire" collection). Required on every
 item: `title`, `summary`, `source`, `url`, `time`, `place`, `section`. Optional: `oursLabel`
@@ -110,15 +150,16 @@ the first time it appears in the feed.
 netlify.toml          build command + publish dir
 admin/                Decap CMS (config.yml is the schema writers see)
 src/
-  _data/              site, nav, sections, ticker, staff, desks, plans, wire, outlets, build
+  _data/              site, nav, sections, ticker, podcast, staff, desks, plans, wire, outlets, build
   _includes/          base.njk + article/column/explainer layouts
   articles/           reported stories (markdown)
   columns/            opinion columns (markdown)
   explainers/         explainers (markdown, with glossary + sources)
   css/style.css       the whole design; media queries at 1080 and 760
   images/             photographs and hedcuts
-  index.njk           homepage
+  index.njk           homepage — photo hero, more stories, wire, podcast, opinion
   sections.njk        generates /business/, /security-and-diplomacy/, /politics/
+  podcast.njk         /podcast/
   wire.njk            /wire/ — the aggregation feed
   opinion.njk         /opinion/
   explainers.njk      /explainers/
@@ -149,6 +190,9 @@ Four Netlify forms, all with a honeypot field and all redirecting to `/thanks/` 
 | `letters` | /opinion/ and every column | /thanks/?form=letter |
 | `questions` | /explainers/ and every explainer | /thanks/?form=question |
 
+The article feedback box reuses `contact` rather than adding a fifth form, and sends a hidden
+`about` field carrying the headline — so a correction arrives already attached to its story.
+
 Submissions appear under **Forms** in the Netlify dashboard. To get them by email:
 Netlify → Site configuration → Forms → Form notifications → Add notification.
 
@@ -160,8 +204,8 @@ existing writer logins still work. Invite new writers under Netlify → Identity
 Editorial workflow is on: writers save drafts, an editor publishes. Drafts do not appear on the
 site until published.
 
-Note: the CMS `wire` and `settings` collections point at `.json` files, but the repo currently
-ships `.js` data files. Either keep editing `wire.js` by hand, or convert those two to JSON —
+Note: the CMS `wire` and `settings` collections (ticker, podcast, staff) point at `.json`
+files, but the repo ships `.js` data files. Either keep editing `wire.js` by hand, or convert those two to JSON —
 whichever you prefer. Everything else in the CMS works as-is.
 
 ## Sections

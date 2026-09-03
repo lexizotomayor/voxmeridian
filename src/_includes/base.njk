@@ -61,14 +61,27 @@
   <div class="shell datebar__inner">
     <div class="datebar__date">{{ build.date | readableDate }} · {{ site.founded }}</div>
     <div class="ticker" aria-label="Market ticker">
-      <div class="ticker__track">
-        {% for t in ticker %}
-        <span class="ticker__item">
-          <span class="ticker__label">{{ t.label }}</span>
-          <span class="ticker__val">{{ t.value }}</span>
-          <span class="ticker__move--{{ t.dir }}">{{ t.move }}</span>
-        </span>
-        {% endfor %}
+      {# Two identical tracks: the marquee translates -50% so the loop is seamless.
+         The second copy is aria-hidden so screen readers hear the row once. #}
+      <div class="ticker__marquee">
+        <div class="ticker__track">
+          {% for t in ticker %}
+          <span class="ticker__item">
+            <span class="ticker__label">{{ t.label }}</span>
+            <span class="ticker__val">{{ t.value }}</span>
+            <span class="ticker__move--{{ t.dir }}">{{ t.move }}</span>
+          </span>
+          {% endfor %}
+        </div>
+        <div class="ticker__track" aria-hidden="true">
+          {% for t in ticker %}
+          <span class="ticker__item">
+            <span class="ticker__label">{{ t.label }}</span>
+            <span class="ticker__val">{{ t.value }}</span>
+            <span class="ticker__move--{{ t.dir }}">{{ t.move }}</span>
+          </span>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
@@ -83,7 +96,17 @@
 </div>
 {% endif %}
 
-{% block tabs %}{% endblock %}
+{# Opinion / Explainers tab strip. Any page setting "tabs: true" in its front
+   matter gets it, and the current URL takes the active tab. No JavaScript:
+   these are two real pages, so the tabs survive a hard reload and deep links. #}
+{% if tabs %}
+<div class="tabs">
+  <nav class="shell tabs__inner" aria-label="Opinion and explainers">
+    <a href="/opinion/"{% if page.url == '/opinion/' or layout == 'column.njk' %} aria-current="page"{% endif %}>Opinion</a>
+    <a href="/explainers/"{% if page.url == '/explainers/' or layout == 'explainer.njk' %} aria-current="page"{% endif %}>Explainers</a>
+  </nav>
+</div>
+{% endif %}
 
 <main id="main">
 {{ content | safe }}

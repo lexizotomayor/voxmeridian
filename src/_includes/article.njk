@@ -1,29 +1,28 @@
 ---
 layout: base.njk
 ---
+{# The author's photo and bio come from _data/staff.js, matched on the byline —
+   so a writer's card updates everywhere at once instead of per story. #}
+{% set writer = staff | byName(author) %}
+{% set storyUrl = site.url + page.url %}
+
 <article class="shell page">
 
   <div class="hero">
     <div>
-      <div class="kicker">{{ section }}</div>
+      <div class="chip">{{ section }}</div>
       <h1 class="hero__title">{{ title }}</h1>
       <p class="hero__dek">{{ dek }}</p>
       <div class="byline-strip" style="margin-top:26px">
-        <span class="byline-strip__accent">{{ author }}</span>
-        <span class="byline-strip__sep"></span>
-        <span>{{ authorRole }}</span>
-        <span class="byline-strip__sep"></span>
-        <span>{{ page.date | readableDate }}</span>
-        <span class="byline-strip__sep"></span>
-        <span>{{ content | readtime }}</span>
+        <span class="byline-strip__accent">By {{ author }}{% if authorRole %}, {{ authorRole }}{% endif %}</span>
       </div>
     </div>
     {% if displayWord %}
     <div class="rail" aria-hidden="true">
       <div class="rail__stack">
-        <div class="rail__label">{{ section }}</div>
+        <div class="rail__label">{{ site.name }}</div>
         <div class="rail__line"></div>
-        <div class="rail__sub">{{ dateline or site.founded }}</div>
+        <div class="rail__sub">{{ dateline or section }}</div>
       </div>
       <div class="rail__word">{{ displayWord }}</div>
     </div>
@@ -40,22 +39,96 @@ layout: base.njk
   {% endif %}
 
   <div class="cols">
-    <div class="cols__main prose">
-      {{ content | safe }}
+    <div class="cols__main">
+
+      <div class="byline-strip byline-strip--stamp">
+        <span class="byline-strip__accent">{{ page.date | timeAgo }}</span>
+        <span class="byline-strip__sep"></span>
+        <span>{{ page.date | readableDate }}</span>
+        <span class="byline-strip__sep"></span>
+        <span>{{ content | readtime }}</span>
+      </div>
+
+      {# prose--drop puts the terracotta drop cap on the first paragraph. #}
+      <div class="prose prose--drop">
+        {{ content | safe }}
+      </div>
+
+      <div class="sharebox">
+        <div class="rule-head" style="border:none;padding:0;margin-bottom:18px">Share this story</div>
+        <div class="sharerow">
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{ storyUrl | urlencode }}" target="_blank" rel="noopener"><span class="sharerow__mark" aria-hidden="true">f</span>Facebook</a>
+          <a href="https://twitter.com/intent/tweet?url={{ storyUrl | urlencode }}&text={{ title | urlencode }}" target="_blank" rel="noopener"><span class="sharerow__mark" aria-hidden="true">&#120143;</span>X</a>
+          <a href="https://bsky.app/intent/compose?text={{ title | urlencode }}%20{{ storyUrl | urlencode }}" target="_blank" rel="noopener"><span class="sharerow__mark" aria-hidden="true">&#8961;</span>Bluesky</a>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ storyUrl | urlencode }}" target="_blank" rel="noopener"><span class="sharerow__mark" aria-hidden="true">in</span>LinkedIn</a>
+          <a href="mailto:?subject={{ title | urlencode }}&body={{ storyUrl | urlencode }}"><span class="sharerow__mark" aria-hidden="true">&#9993;</span>Email</a>
+        </div>
+      </div>
+
+      <section class="panel panel--split" style="margin-top:clamp(40px,4vw,60px)">
+        <div class="panel__rail">Feedback</div>
+        <div>
+          <h2 class="panel__title">Did we get this story right?</h2>
+          <p class="panel__text">Corrections, tips, or a different read — every note reaches the newsroom. We never publish your details without asking first.</p>
+          <form name="contact" method="POST" action="/thanks/?form=contact" data-netlify="true" netlify-honeypot="bot-field">
+            <p class="vh"><label>Do not fill this in <input name="bot-field"></label></p>
+            <input type="hidden" name="about" value="{{ title }}">
+            <div class="field-row">
+              <label class="field"><span class="field__label">Your name</span><input type="text" name="name" required></label>
+              <label class="field"><span class="field__label">Email</span><input type="email" name="email" required></label>
+            </div>
+            <label class="field">
+              <span class="field__label">What is this about</span>
+              <select name="kind">
+                <option>A correction</option>
+                <option>A tip</option>
+                <option>A different read</option>
+                <option>Something else</option>
+              </select>
+            </label>
+            <label class="field"><span class="field__label">Your message</span><textarea name="message" rows="3" required></textarea></label>
+            <button type="submit" class="btn btn--light">Send to the newsroom</button>
+          </form>
+        </div>
+      </section>
+
     </div>
 
     <aside class="cols__aside">
+
+      {% if writer %}
+      <div class="authorcard">
+        <h2 class="rule-head">Written by</h2>
+        <div class="mount mount--sm authorcard__photo" style="margin:18px 0 16px">
+          <div class="mount__well" style="aspect-ratio:1/1"><img src="{{ writer.photo }}" alt="{{ writer.name }}"></div>
+        </div>
+        <div class="authorcard__name">{{ writer.name }}</div>
+        <div class="staff__role">{{ writer.role }}</div>
+        <p class="staff__bio" style="margin-bottom:16px">{{ writer.bio }}</p>
+        <a href="/about/#newsroom" class="authorcard__more">More about the newsroom</a>
+      </div>
+      {% endif %}
+
       <div>
-        <h2 class="rule-head">More from {{ section }}</h2>
+        <h2 class="rule-head">More on this</h2>
         <div class="sidelist">
-          {% for post in collections.articles | reverse %}
-            {% if post.data.section == section and post.url != page.url %}
-              {% if loop.index0 < 4 %}
+          {% set shown = [] %}
+          {% for post in collections.articles %}
+            {% if post.data.section == section and post.url != page.url and shown.length < 4 %}
+              {% set _ = shown.push(post) %}
               <a href="{{ post.url }}">
+                <div class="kicker" style="margin-bottom:6px">{{ post.data.section }}</div>
                 <div class="sidelist__title">{{ post.data.title }}</div>
                 <div class="sidelist__meta">{{ post.date | timeAgo }}</div>
               </a>
-              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {% for it in wire.all %}
+            {% if it.section == section and loop.index0 < 3 %}
+            <a href="{{ it.url }}" target="_blank" rel="noopener">
+              <div class="kicker" style="margin-bottom:6px">Via {{ it.source }}</div>
+              <div class="sidelist__title">{{ it.title }}</div>
+            </a>
             {% endif %}
           {% endfor %}
         </div>
@@ -77,7 +150,7 @@ layout: base.njk
 
       <div class="panel">
         <div class="kicker kicker--light" style="margin-bottom:12px">The daily brief</div>
-        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg);margin-bottom:18px">Three stories that matter across the Pacific, every weekday morning. Free.</p>
+        <p class="panel__note">Three stories that matter across the Pacific, every weekday morning. Free.</p>
         <a href="/subscribe/" class="btn btn--light">Sign up</a>
       </div>
     </aside>

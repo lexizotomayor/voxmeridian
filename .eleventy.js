@@ -22,6 +22,11 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("slugify", (s) =>
     String(s).toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
   );
+  // Look a person up in _data/staff.js by their byline.
+  eleventyConfig.addFilter("byName", (list, name) =>
+    (list || []).find((x) => x && x.name === name)
+  );
+  eleventyConfig.addFilter("urlencode", (s) => encodeURIComponent(String(s || "")));
   eleventyConfig.addFilter("readtime", (body) => {
     const words = String(body || "").split(/\s+/).length;
     return Math.max(1, Math.round(words / 220)) + " min read";

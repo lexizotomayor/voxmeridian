@@ -163,6 +163,25 @@ collections:
                 name: "dir"
                 widget: "select"
                 options: ["up", "down", "flat"]
+      - name: "podcast"
+        label: "Podcast"
+        file: "src/_data/podcast.json"
+        description: "Turn the homepage band and /podcast/ on or off, and list episodes. Leave 'sample' on until the first episode is actually recorded — it prints the caveat line."
+        fields:
+          - { label: "Show the podcast?", name: "show", widget: "boolean", default: true }
+          - { label: "Still a stand-in?", name: "sample", widget: "boolean", default: true }
+          - { label: "Show title", name: "title", widget: "string" }
+          - { label: "What it is", name: "blurb", widget: "text" }
+          - { label: "Caveat line", name: "caveat", widget: "text", required: false }
+          - label: "Episodes"
+            name: "episodes"
+            widget: "list"
+            fields:
+              - { label: "Episode number", name: "ep", widget: "number" }
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "One line about it", name: "dek", widget: "text" }
+              - { label: "Length", name: "len", widget: "string", hint: "e.g. 24 min" }
+              - { label: "Audio URL", name: "audio", widget: "string", required: false, hint: "Leave blank until it exists — the play button greys out." }
       - name: "staff"
         label: "Newsroom"
         file: "src/_data/staff.json"
