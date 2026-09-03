@@ -750,11 +750,8 @@ main { display: block; }
     border-right: none; border-bottom: 1px solid rgba(252, 239, 211, 0.28);
     margin-right: 0; padding: 9px 0;
   }
-  .ticker { padding: 8px 0 10px; overflow-x: auto; scrollbar-width: none; }
-  .ticker::-webkit-scrollbar { display: none; }
-  .ticker__marquee { animation: none; width: auto; }
+  .ticker { padding: 8px 0 10px; }
   .ticker__track { gap: 22px; }
-  .ticker__track + .ticker__track { display: none; }
 
   .tabs__inner { overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
   .tabs__inner::-webkit-scrollbar { display: none; }
