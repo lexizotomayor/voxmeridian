@@ -307,7 +307,7 @@ main { display: block; }
 
 .homegrid {
   max-width: var(--shell); margin: 0 auto;
-  padding: 0 clamp(20px, 3vw, 48px);
+  padding: 0 var(--pad-r) 0 var(--pad-l);
   display: grid; grid-template-columns: minmax(0, 1fr) clamp(200px, 20vw, 300px);
 }
 .homegrid__main { padding: 30px 40px 46px 0; min-width: 0; }
@@ -728,20 +728,23 @@ main { display: block; }
   .rail-nav__list { display: none; }
   .homegrid__main { padding-top: 14px; }
 
-  /* lead photo goes full-bleed above the headline */
+  /* lead photo sits in normal flow above the headline, same margins as the
+     text — no full-bleed. Full-bleed relied on negative margins to cancel
+     the ancestor's padding exactly, stacked on top of aspect-ratio +
+     overflow:hidden + a forced GPU compositing layer (transform:
+     translateZ(0)) on the same element for the torn-paper filter. That
+     whole combination is a known rough edge in WebKit; max-height alone
+     didn't fix it on real Safari. Dropping full-bleed and aspect-ratio
+     both, and letting the photo size itself the plain way (fill the
+     column width, let height follow naturally), removes the fragile
+     combination instead of trying to patch around it. */
   .lead__split { display: flex; flex-direction: column; }
   .lead__split > *:first-child { order: -1; }
-  .lead__split .mount {
-    margin-left: calc(var(--pad-l) * -1); margin-right: calc(var(--pad-r) * -1);
-    /* Hard ceiling, independent of the aspect-ratio math below. Some Safari
-       versions mis-resolve aspect-ratio on a box whose own height already
-       comes from a percentage tied to an aspect-ratio'd ancestor (this box's
-       height is 100% of a parent sized by .mount--4x3's aspect-ratio) — the
-       photo can end up sized against the wrong reference and blow past the
-       viewport. This caps it regardless of which value wins. */
-    max-height: 50vh;
+  .lead__split .mount--4x3 { aspect-ratio: auto; }
+  .lead__split .mount--4x3 .mount__well { aspect-ratio: auto; height: auto; }
+  .lead__split .mount--4x3 .mount__well img {
+    max-width: 100%; width: 100%; height: auto; object-fit: initial;
   }
-  .lead__split .mount--4x3 .mount__well { aspect-ratio: 3 / 2; }
   .lead { padding-bottom: 26px; }
   .nameplate { display: none; }
 
@@ -766,8 +769,21 @@ main { display: block; }
   .story { grid-template-columns: minmax(0, 1fr) 84px; gap: 12px; }
   .story__title { font-size: 18px; }
 
-  .story--photo { grid-template-columns: 96px minmax(0, 1fr); gap: 14px; }
-  .story--photo .story__title { font-size: 18px; }
+  /* "More stories" cards go full-width and stacked on phone — photo on top
+     spanning the column, then kicker/title, then byline — same convention
+     as most news sites, instead of a small side thumbnail. Same reasoning
+     as the lead photo: no aspect-ratio on the .mount chain, since that
+     combined with its overflow/filter/transform is the fragile part on
+     Safari. Let the image size itself intrinsically instead. */
+  .story--photo {
+    grid-template-columns: minmax(0, 1fr); gap: 12px;
+    padding-bottom: 26px; margin-bottom: 4px; border-bottom: 1px solid var(--hairline);
+  }
+  .story--photo .story__thumb { width: 100%; aspect-ratio: auto; }
+  .story--photo .story__thumb .mount__well { aspect-ratio: auto; height: auto; }
+  .story--photo .story__thumb .mount__well img { width: 100%; height: auto; object-fit: initial; }
+  .story--photo .story__title { font-size: 20px; }
+  .story--photo .story__stamp { grid-column: 1; text-align: left; }
 
   .podcast { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .pod__play { flex-basis: 62px; height: 62px; font-size: 19px; }
