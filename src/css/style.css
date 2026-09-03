@@ -731,7 +731,16 @@ main { display: block; }
   /* lead photo goes full-bleed above the headline */
   .lead__split { display: flex; flex-direction: column; }
   .lead__split > *:first-child { order: -1; }
-  .lead__split .mount { margin-left: calc(var(--pad-l) * -1); margin-right: calc(var(--pad-r) * -1); }
+  .lead__split .mount {
+    margin-left: calc(var(--pad-l) * -1); margin-right: calc(var(--pad-r) * -1);
+    /* Hard ceiling, independent of the aspect-ratio math below. Some Safari
+       versions mis-resolve aspect-ratio on a box whose own height already
+       comes from a percentage tied to an aspect-ratio'd ancestor (this box's
+       height is 100% of a parent sized by .mount--4x3's aspect-ratio) — the
+       photo can end up sized against the wrong reference and blow past the
+       viewport. This caps it regardless of which value wins. */
+    max-height: 50vh;
+  }
   .lead__split .mount--4x3 .mount__well { aspect-ratio: 3 / 2; }
   .lead { padding-bottom: 26px; }
   .nameplate { display: none; }
