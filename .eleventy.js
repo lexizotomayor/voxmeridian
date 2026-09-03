@@ -7,6 +7,10 @@ module.exports = function (eleventyConfig) {
     new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
   );
 
+  eleventyConfig.addFilter("readableDateFull", (d) =>
+    new Date(d).toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
+  );
+
   eleventyConfig.addFilter("timeAgo", (d) => {
     const hours = Math.floor((Date.now() - new Date(d).getTime()) / 36e5);
     if (hours < 1) return "just now";
