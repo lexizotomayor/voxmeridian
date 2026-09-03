@@ -126,6 +126,35 @@ figcaption {
   color: var(--meta); padding: 12px 4px 0; max-width: 70ch;
 }
 
+/* ---------- phone header (design's isNarrow composition) -------------- */
+
+.mhead { display: none; }
+.mhead__bar {
+  position: sticky; top: 0; z-index: 50; list-style: none; cursor: pointer;
+  background: var(--esmeralda); color: var(--areia);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 14px 18px;
+}
+.mhead__bar::-webkit-details-marker { display: none; }
+.mhead__mark {
+  color: var(--areia); font-size: 30px; font-weight: 800;
+  letter-spacing: -0.035em; line-height: 1; text-transform: lowercase;
+}
+.mhead__burger {
+  width: 46px; height: 46px; flex: 0 0 46px; border-radius: 8px;
+  border: 1px solid rgba(252, 239, 211, 0.35);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+}
+.mhead__burger span { display: block; width: 20px; height: 2px; background: var(--bege); }
+.mhead__nav {
+  background: var(--esmeralda); padding: 4px 18px 22px;
+  display: flex; flex-direction: column;
+}
+.mhead__nav a {
+  color: var(--areia); padding: 14px 0; font-size: 17px; font-weight: 700;
+  border-top: 1px solid rgba(252, 239, 211, 0.16);
+}
+
 /* ---------- masthead ------------------------------------------------- */
 
 .masthead {
@@ -273,6 +302,14 @@ main { display: block; }
 }
 .lead__split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 32px; align-items: start; }
 .lead__dek { font-size: 21px; line-height: 1.55; font-weight: 500; color: var(--dek); margin-bottom: 18px; }
+
+/* Homepage-only, wide viewports only: the nav-in-rail replaces the standalone
+   masthead here, so the masthead is hidden — but only above 1080px, where the
+   rail itself is visible (see the tablet breakpoint below). Below that, the
+   masthead (or .mhead on phones) is the only nav, so it must stay visible. */
+@media (min-width: 1081px) {
+  body.home .masthead { display: none; }
+}
 
 /* Homepage-only: replaces the standalone masthead. A vertical section nav
    sits above a two-tone "vox meridian" mark, both right-aligned in the rail
@@ -618,13 +655,14 @@ main { display: block; }
    Phone — single column throughout, no vertical type, no rails
    ================================================================== */
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   :root { --pad-l: 20px; --pad-r: 20px; }
 
   body { font-size: 17px; }
 
-  .masthead__bar { flex-direction: column; align-items: stretch; gap: 12px; }
-  .topnav { justify-content: flex-start; gap: 18px; }
+  /* the desktop masthead is replaced, not restacked */
+  .mhead { display: block; }
+  .masthead { display: none; }
 
   .datebar__inner { flex-direction: column; align-items: stretch; }
   .datebar__date {

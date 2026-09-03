@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
+<body{% if page.url == '/' %} class="home"{% endif %}>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <filter id="tornEdge">
@@ -46,7 +46,20 @@
 </div>
 {% endif %}
 
-{% if not hideMasthead %}
+{# Phone composition (<=900px). The design switches to a different header here,
+   not a reflow of the desktop one — so both exist and CSS shows one. #}
+<details class="mhead">
+  <summary class="mhead__bar">
+    <a href="/" class="mhead__mark">vox meridian</a>
+    <span class="mhead__burger" aria-hidden="true"><span></span><span></span><span></span></span>
+  </summary>
+  <nav class="mhead__nav" aria-label="Sections">
+    {% for item in nav %}
+    <a href="{{ item.url }}">{{ item.name }}</a>
+    {% endfor %}
+  </nav>
+</details>
+
 <header class="masthead">
   <div class="shell masthead__bar">
     <a href="/" class="wordmark" title="{{ site.name }} home"><em>vox</em> meridian</a>
@@ -57,7 +70,6 @@
     </nav>
   </div>
 </header>
-{% endif %}
 
 <div class="datebar">
   <div class="shell datebar__inner">
