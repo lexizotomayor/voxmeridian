@@ -21,8 +21,8 @@
   --body: #1D3A38;
 
   --shell: 1440px;
-  --pad-l: clamp(48px, 7vw, 132px);
-  --pad-r: clamp(28px, 3vw, 48px);
+  --pad-l: clamp(20px, 3vw, 48px);
+  --pad-r: clamp(20px, 3vw, 48px);
   --rule: 7px double var(--terra-dark);
 }
 
@@ -283,7 +283,7 @@ main { display: block; }
 /* two-column body + sidebar */
 
 .cols {
-  display: grid; grid-template-columns: minmax(0, 1fr) clamp(240px, 25vw, 340px);
+  display: grid; grid-template-columns: minmax(0, 1fr) clamp(200px, 20vw, 300px);
   gap: clamp(32px, 4vw, 72px); align-items: start;
 }
 .cols__main { min-width: 0; }
@@ -303,43 +303,19 @@ main { display: block; }
 .lead__split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 32px; align-items: start; }
 .lead__dek { font-size: 21px; line-height: 1.55; font-weight: 500; color: var(--dek); margin-bottom: 18px; }
 
-/* Homepage-only, wide viewports only: the nav-in-rail replaces the standalone
-   masthead here, so the masthead is hidden — but only above 1080px, where the
-   rail itself is visible (see the tablet breakpoint below). Below that, the
-   masthead (or .mhead on phones) is the only nav, so it must stay visible. */
-@media (min-width: 1081px) {
-  body.home .masthead { display: none; }
-}
-
-/* Homepage-only: replaces the standalone masthead. A vertical section nav
-   sits above a two-tone "vox meridian" mark, both right-aligned in the rail
-   beside the lead headline. */
 .nameplate {
-  display: flex; flex-direction: column; align-items: flex-end;
-  gap: clamp(14px, 1.8vw, 26px); height: 100%;
-}
-.nameplate__nav {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
-}
-.nameplate__nav a {
-  color: var(--esmeralda); font-size: 11px; font-weight: 800;
-  letter-spacing: 0.14em; text-transform: uppercase;
-}
-.nameplate__nav a:hover, .nameplate__nav a[aria-current='page'] { color: var(--terra-dark); }
-.nameplate__mark {
   display: flex; flex-direction: row-reverse; align-items: flex-start;
-  justify-content: flex-end; gap: clamp(10px, 1.2vw, 18px); flex: 1 1 auto; min-height: 0;
+  justify-content: flex-end; gap: clamp(10px, 1.2vw, 18px);
 }
 .nameplate__word {
-  writing-mode: vertical-rl; font-size: clamp(36px, 4.8vw, 82px); font-weight: 800;
-  letter-spacing: -0.02em; line-height: 0.95; white-space: nowrap; text-transform: lowercase;
+  writing-mode: vertical-rl; font-size: clamp(82px, 10vw, 168px); font-weight: 800;
+  letter-spacing: -0.055em; line-height: 0.95; white-space: nowrap; text-transform: lowercase;
   /* vertical-rl + nowrap means every extra character adds a full em of HEIGHT.
-     Sized so "vox meridian" in full fits comfortably under the cap below at
-     realistic viewport heights; the cap stays as a backstop for edge cases. */
-  max-height: 88vh; overflow: hidden;
+     Keep the word short (one word) and cap it so a longer string can never
+     stretch the lead block past the viewport. */
+  max-height: 78vh; overflow: hidden;
 }
 .nameplate__word em { color: var(--terra-dark); font-style: normal; }
-.nameplate__word-sub { color: var(--esmeralda); }
 .nameplate__tag {
   writing-mode: vertical-rl; font-size: clamp(17px, 1.7vw, 24px); font-weight: 700;
   letter-spacing: 0.14em; text-transform: uppercase; color: var(--esmeralda); white-space: nowrap;
@@ -663,6 +639,13 @@ main { display: block; }
   /* the desktop masthead is replaced, not restacked */
   .mhead { display: block; }
   .masthead { display: none; }
+
+  /* lead photo goes full-bleed above the headline */
+  .lead__split { display: flex; flex-direction: column; }
+  .lead__split > *:first-child { order: -1; }
+  .lead__split .mount { margin-left: calc(var(--pad-l) * -1); margin-right: calc(var(--pad-r) * -1); }
+  .lead__split .mount--4x3 .mount__well { aspect-ratio: 3 / 2; }
+  .lead { padding-bottom: 26px; }
 
   .datebar__inner { flex-direction: column; align-items: stretch; }
   .datebar__date {
