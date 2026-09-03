@@ -74,6 +74,42 @@ the file ships `sample: true`, which prints the caveat line on both the homepage
 
 ---
 
+## Fixed since the first v3 zip
+
+0. **The homepage was structurally wrong.** The port gave it a conventional horizontal
+   masthead — wordmark left, nav right. The design has no navbar on the homepage at all: the
+   section list runs vertically down the right rail above the vertical wordmark, and the whole
+   page is one two-column grid with the podcast band under the main column and a dark footer
+   panel under the rail. Rebuilt to match, on a new `home.njk` layout that omits the masthead.
+   Every other page still uses `base.njk` and keeps its horizontal masthead, as designed.
+
+
+Everything below is already applied in this folder — listed so you can tell this copy
+apart from earlier downloads.
+
+1. **Nameplate overflow.** The vertical rail word was `vox meridian`; `writing-mode: vertical-rl`
+   with `white-space: nowrap` turns every character into a full em of height, so twelve of them
+   made a ~1,800px column that shoved the homepage lead out of shape. Back to `vox`, with a
+   78vh cap in CSS as a backstop.
+2. **Navbar wrapping.** Nine nav items exceeded the bar width and `flex-wrap: wrap` dropped the
+   tail onto a second line under the wordmark. The row is now `nowrap` and scrolls sideways.
+3. **Desktop off-centre.** Shell gutters were asymmetric — `clamp(48px,7vw,132px)` left against
+   `clamp(28px,3vw,48px)` right — so wide screens sat visibly shoved. Now symmetric
+   `clamp(20px,3vw,48px)`, matching the design files. Sidebar narrowed 340px → 300px, also the
+   design value.
+4. **Homepage wire showed one item.** It read `wire.days[0]`, and the newest day held a single
+   story. Now draws the newest six across days.
+5. **Blank related-story blocks.** `{% if loop.index0 < n %}` inside a filtered loop counts
+   position in the whole list, not matches — so a Politics article, whose wire items sit at
+   indices 4, 6 and 9, showed none. Added `limit` / `where` / `exclude` filters in
+   `.eleventy.js` and rewrote every list to filter first, then limit.
+6. **Phone layout.** The design's phone view is a separate composition, not a reflow: sticky
+   compact header with a hamburger, full-bleed 3:2 lead photo above the headline, no vertical
+   type. Ported as `.mhead` in `base.njk` (built on `<details>`, so no JavaScript), and the
+   whole phone block moved from 760px to **900px** to match the design's switch point.
+
+---
+
 ## Before this looks like the mockups
 
 `src/articles/` is empty — only `.gitkeep`. Until there is at least one file in it:

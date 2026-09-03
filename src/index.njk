@@ -1,194 +1,125 @@
 ---
-layout: base.njk
+layout: home.njk
 eleventyExcludeFromCollections: true
 ---
-{# The lead is our own work: newest reported story if there is one, otherwise the
-   newest explainer. The homepage never leads with someone else's reporting. #}
+{# Structure follows the design file exactly: ONE two-column grid.
+   row 1  main (lead + more stories)      |  rail (section nav, vertical wordmark)
+   row 2  podcast band                    |  dark footer panel
+   There is no horizontal masthead on the homepage — the wordmark IS the rail. #}
 {% set lead = collections.articles[0] or collections.explainers[0] %}
 
-<div class="shell page">
+<div class="homegrid" id="main">
 
-  {% if lead %}
-  <section class="lead">
-    <div class="kicker">{% if lead.data.section %}{{ lead.data.section }}{% else %}Explainer No. {{ lead.data.number }} · our own work{% endif %}</div>
-
-    <div class="hero" style="margin-bottom:0">
-      <div>
-        <h1 class="lead__title"><a href="{{ lead.url }}" style="color:var(--areia)">{{ lead.data.title }}</a></h1>
-        <div class="lead__byline">
-          {{ lead.data.author }}{% if lead.data.authorRole %}, {{ lead.data.authorRole }}{% endif %}
-          {% if lead.date %} · {{ lead.date | timeAgo }}{% endif %}
-        </div>
-      </div>
-      <div class="nameplate">
-        <nav class="nameplate__nav" aria-label="Sections">
-          {% for item in nav %}
-          <a href="{{ item.url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>{{ item.name }}</a>
-          {% endfor %}
-        </nav>
-        <div class="nameplate__mark" aria-hidden="true">
-          <div class="nameplate__word"><em>vox</em><span class="nameplate__word-sub">meridian</span></div>
-          <div class="nameplate__tag">{{ site.tagline }}</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="lead__split">
-      <div>
-        {% if lead.data.image %}
-        <figure>
-          <div class="mount mount--4x3">
-            <div class="mount__well"><img src="{{ lead.data.image }}" alt="{{ lead.data.imageAlt or '' }}"></div>
+  <main class="homegrid__main">
+    {% if lead %}
+    <article class="lead">
+      <div class="lead__kicker">{% if lead.data.section %}Main Story / {{ lead.data.section }}{% else %}Explainer No. {{ lead.data.number }}{% endif %}</div>
+      <h1 class="lead__title"><a href="{{ lead.url }}">{{ lead.data.title }}</a></h1>
+      <div class="lead__byline">{{ lead.data.author }}{% if lead.data.authorRole %}, {{ lead.data.authorRole }}{% endif %}{% if lead.date %} · {{ lead.date | timeAgo }}{% endif %}</div>
+      <div class="lead__split">
+        <div class="mount mount--4x3">
+          <div class="mount__well">
+            {% if lead.data.image %}<img src="{{ lead.data.image }}" alt="{{ lead.data.imageAlt or '' }}">{% endif %}
           </div>
-          {% if lead.data.caption %}<figcaption>{{ lead.data.caption }}</figcaption>{% endif %}
-        </figure>
+        </div>
+        <div>
+          <p class="lead__dek">{{ lead.data.dek }}</p>
+          <a href="{{ lead.url }}" class="lead__more">Read full story<span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+    </article>
+    {% endif %}
+
+    {% if collections.articles.length > 1 %}
+    <h2 class="rule-head">More stories</h2>
+    <div class="storylist">
+      {% for post in collections.articles %}
+        {% if loop.index0 > 0 and loop.index0 < 6 %}
+        <a href="{{ post.url }}" class="story story--photo">
+          <div class="mount mount--sm story__thumb">
+            <div class="mount__well">
+              {% if post.data.image %}<img src="{{ post.data.image }}" alt="">{% endif %}
+            </div>
+          </div>
+          <div style="min-width:0">
+            <div class="kicker">{{ post.data.section }}</div>
+            <div class="story__title">{{ post.data.title }}</div>
+          </div>
+          <div class="story__stamp">{{ post.data.author }}<br>{{ post.date | timeAgo }}</div>
+        </a>
         {% endif %}
-      </div>
-      <div>
-        <p class="lead__dek">{{ lead.data.dek }}</p>
-        <a href="{{ lead.url }}" class="btn btn--ghost">Read the full story &rarr;</a>
-      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <h2 class="rule-head" style="margin-top:34px">The Wire · {{ wire.all[0].day }}</h2>
+    <p class="rule-head__note">What other newsrooms reported across the region. Each item names the outlet that did the work and links to the original — the summaries are ours, the reporting is theirs.</p>
+    <div class="wire">
+      {% for it in wire.all | limit(5) %}
+      <article class="wire__item">
+        <div class="wire__stamp">
+          <div class="wire__time">{{ it.time }}</div>
+          <div class="wire__place">{{ it.place }}</div>
+        </div>
+        <div>
+          <h3 class="wire__title">{{ it.title }}</h3>
+          <p class="wire__summary">{{ it.summary }}</p>
+          <div class="wire__links">
+            <a href="{{ it.url }}" target="_blank" rel="noopener" class="wire__via">Read it at {{ it.source }} &rarr;</a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    <div class="btn-row" style="margin-top:22px">
+      <a href="/wire/" class="btn">The full wire</a>
+      <a href="/subscribe/" class="btn btn--ghost">Get it by email</a>
+    </div>
+  </main>
+
+  {# Right rail: section list, then the wordmark set vertically. This is the
+     homepage's navigation — do not replace it with a horizontal bar. #}
+  <aside class="rail-nav">
+    <nav class="rail-nav__list" aria-label="Sections">
+      {% for item in nav %}
+      <a href="{{ item.url }}">{{ item.name }}</a>
+      {% endfor %}
+    </nav>
+    <a href="/" class="nameplate" title="{{ site.name }} home">
+      <div class="nameplate__word"><em>vox</em> meridian</div>
+      <div class="nameplate__tag">{{ site.tagline }}</div>
+    </a>
+  </aside>
+
+  {% if podcast.show and podcast.episodes.length %}
+  <section class="homegrid__pod">
+    <div class="rule-top"></div>
+    <h2 class="rule-head">Podcast</h2>
+    {% if podcast.sample %}<p class="rule-head__note">{{ podcast.caveat }}</p>{% endif %}
+    <div class="podcast">
+      {% for ep in podcast.episodes | limit(4) %}
+      <a class="pod" href="{% if ep.audio %}{{ ep.audio }}{% else %}/podcast/{% endif %}">
+        <span class="pod__play" aria-hidden="true">&#9654;</span>
+        <span style="min-width:0">
+          <span class="pod__title">{{ ep.title }}</span>
+          <span class="pod__meta">Ep. {{ ep.ep }} · {{ ep.len }}</span>
+        </span>
+      </a>
+      {% endfor %}
     </div>
   </section>
   {% endif %}
 
-  <div class="cols">
-    <div class="cols__main">
-
-      {% if collections.articles.length > 1 %}
-      <h2 class="rule-head">More stories</h2>
-      <div class="storylist">
-        {% for post in collections.articles %}
-          {% if loop.index0 > 0 and loop.index0 < 6 %}
-          <article class="story story--photo">
-            {% if post.data.image %}
-            <a href="{{ post.url }}" class="mount mount--sm story__thumb" aria-hidden="true" tabindex="-1">
-              <div class="mount__well"><img src="{{ post.data.image }}" alt=""></div>
-            </a>
-            {% endif %}
-            <div>
-              <div class="kicker" style="margin-bottom:7px">{{ post.data.section }}</div>
-              <a href="{{ post.url }}"><div class="story__title">{{ post.data.title }}</div></a>
-            </div>
-            <div class="story__stamp">{{ post.data.author }}<br>{{ post.date | timeAgo }}</div>
-          </article>
-          {% endif %}
-        {% endfor %}
-      </div>
-      {% endif %}
-
-      {# Draw across days, not out of day 0 — a slow news day can leave the newest
-         label holding a single item, which reads as a broken page. #}
-      <h2 class="rule-head"{% if collections.articles.length > 1 %} style="margin-top:clamp(34px,3.6vw,50px)"{% endif %}>The Wire · {{ wire.all[0].day }}</h2>
-      <p class="rule-head__note">What other newsrooms reported across the region. Each item names the outlet that did the work and links to the original — the summaries are ours, the reporting is theirs.</p>
-
-      <div class="wire">
-        {% for it in wire.all | limit(6) %}
-          {% if true %}
-        <article class="wire__item">
-          <div class="wire__stamp">
-            <div class="wire__time">{{ it.time }}</div>
-            <div class="wire__place">{{ it.place }}</div>
-          </div>
-          <div>
-            {% if it.section %}<div class="kicker" style="margin-bottom:7px"><a href="/{{ it.section | slugify }}/" style="color:var(--terra-dark)">{{ it.section }}</a></div>{% endif %}
-            <h3 class="wire__title">{{ it.title }}</h3>
-            <p class="wire__summary">{{ it.summary }}</p>
-            <div class="wire__links">
-              <a href="{{ it.url }}" target="_blank" rel="noopener" class="wire__via">Read it at {{ it.source }} &rarr;</a>
-              {% if it.oursHref %}
-              <a href="{{ it.oursHref }}" class="wire__ours">Our explainer: {{ it.oursLabel }}</a>
-              {% endif %}
-            </div>
-          </div>
-        </article>
-          {% endif %}
-        {% endfor %}
-      </div>
-
-      <div class="btn-row" style="margin-top:24px">
-        <a href="/wire/" class="btn">The full wire</a>
-        <a href="/subscribe/" class="btn btn--ghost">Get it by email</a>
-      </div>
-
-      {% if podcast.show and podcast.episodes.length %}
-      <h2 class="rule-head" style="margin-top:clamp(34px,3.6vw,50px)">Podcast · {{ podcast.title }}</h2>
-      {% if podcast.sample %}<p class="rule-head__note">{{ podcast.caveat }}</p>{% endif %}
-      <div class="podcast">
-        {% for ep in podcast.episodes | limit(4) %}
-          {% if true %}
-          <a class="pod" href="{% if ep.audio %}{{ ep.audio }}{% else %}/podcast/{% endif %}">
-            <span class="pod__play" aria-hidden="true">&#9654;</span>
-            <span>
-              <span class="pod__title">{{ ep.title }}</span>
-              <span class="pod__meta">Ep. {{ ep.ep }} · {{ ep.len }}</span>
-            </span>
-          </a>
-          {% endif %}
-        {% endfor %}
-      </div>
-      {% endif %}
-
-      {% if collections.columns.length %}
-      <h2 class="rule-head" style="margin-top:clamp(34px,3.6vw,50px)">Opinion</h2>
-      <div class="storylist">
-        {% for col in collections.columns | limit(3) %}
-          {% if true %}
-          <article class="story" style="grid-template-columns:auto minmax(0,1fr)">
-            {% if col.data.authorPhoto %}
-            <div class="mount mount--sm" style="width:64px">
-              <div class="mount__well" style="aspect-ratio:1/1"><img src="{{ col.data.authorPhoto }}" alt=""></div>
-            </div>
-            {% endif %}
-            <div>
-              <div class="kicker" style="margin-bottom:6px">{{ col.data.author }}</div>
-              <a href="{{ col.url }}"><div class="story__title">{{ col.data.title }}</div></a>
-            </div>
-          </article>
-          {% endif %}
-        {% endfor %}
-      </div>
-      {% endif %}
-
+  <section class="homegrid__foot">
+    <div class="homefoot">
+      <a href="/" class="homefoot__mark">vox meridian</a>
+      <a href="/about/">About</a>
+      <a href="/subscribe/">Subscribe</a>
+      <a href="/rss/">RSS</a>
+      <a href="/contact/">Contact</a>
+      <div class="homefoot__legal">&copy; {{ build.date | yearOnly }} Vox Meridian Publications LLC</div>
+      <div class="homefoot__design">Design &copy; {{ build.date | yearOnly }} Lexi Zotomayor</div>
     </div>
-
-    <aside class="cols__aside">
-      <div>
-        <h2 class="rule-head">Explainers</h2>
-        <div class="sidelist">
-          {% for ex in collections.explainers %}
-          <a href="{{ ex.url }}">
-            <div class="kicker" style="margin-bottom:6px">No. {{ ex.data.number }}</div>
-            <div class="sidelist__title">{{ ex.data.title }}</div>
-          </a>
-          {% endfor %}
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="kicker kicker--light" style="margin-bottom:12px">How to read this page</div>
-        <p class="panel__note">The Wire is other newsrooms' reporting, summarised by us and credited to them. Explainers and anything with a Vox Meridian byline are ours.</p>
-        <a href="/about/" class="btn btn--light">Our sourcing</a>
-      </div>
-
-      <div class="panel">
-        <div class="kicker kicker--light" style="margin-bottom:12px">Bureaus</div>
-        <div class="bureaus">
-          {% for b in bureaus %}
-          <div class="bureaus__row">
-            <span class="bureaus__city">{{ b.city }}</span>
-            <span class="bureaus__beat">{{ b.beat }}</span>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="kicker kicker--light" style="margin-bottom:12px">The daily brief</div>
-        <p class="panel__note">The wire in your inbox each weekday morning. Free, no paywall.</p>
-        <a href="/subscribe/" class="btn btn--light">Sign up</a>
-      </div>
-    </aside>
-  </div>
+  </section>
 
 </div>

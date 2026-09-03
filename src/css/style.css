@@ -21,6 +21,8 @@
   --body: #1D3A38;
 
   --shell: 1440px;
+  /* Symmetric, as in the design files. These were asymmetric (132px left against
+     48px right), which pushed the whole desktop layout off-centre. */
   --pad-l: clamp(20px, 3vw, 48px);
   --pad-r: clamp(20px, 3vw, 48px);
   --rule: 7px double var(--terra-dark);
@@ -104,7 +106,16 @@ h1, h2, h3, h4, p, figure, blockquote { margin: 0; }
 
 /* ---------- torn-paper photo mount ---------------------------------- */
 
-.mount { position: relative; padding: clamp(9px, 1vw, 15px); }
+.mount {
+  position: relative; padding: clamp(9px, 1vw, 15px);
+  /* Contain the SVG filter's paint region to this box. Without this, the
+     filter's default bleed (plus feDisplacementMap's scale) can extend past
+     the element edges, and Safari has known bugs compositing that filtered
+     layer during scroll — it can paint at a stale size/position, which looks
+     like a torn-paper sheet covering part of the page. isolate + translateZ
+     force a stable compositing layer per mount instead of a shared one. */
+  overflow: hidden; isolation: isolate; transform: translateZ(0);
+}
 .mount::before {
   content: ''; position: absolute; inset: 0;
   background: var(--mount); filter: url(#tornEdge);
@@ -284,18 +295,84 @@ main { display: block; }
 
 .cols {
   display: grid; grid-template-columns: minmax(0, 1fr) clamp(200px, 20vw, 300px);
-  gap: clamp(32px, 4vw, 72px); align-items: start;
+  gap: clamp(28px, 3.4vw, 58px); align-items: start;
 }
 .cols__main { min-width: 0; }
 .cols__aside { display: flex; flex-direction: column; gap: 34px; min-width: 0; }
 
+/* ---------- homepage grid (matches the design file) -------------------
+   Two columns, two rows. The right rail carries the section nav and the
+   vertical wordmark — the homepage has no horizontal masthead.
+   ------------------------------------------------------------------- */
+
+.homegrid {
+  max-width: var(--shell); margin: 0 auto;
+  padding: 0 clamp(20px, 3vw, 48px);
+  display: grid; grid-template-columns: minmax(0, 1fr) clamp(200px, 20vw, 300px);
+}
+.homegrid__main { padding: 30px 40px 46px 0; min-width: 0; }
+.homegrid__pod { padding: 0 40px 28px 0; min-width: 0; }
+.homegrid__foot { padding: 0 0 48px 32px; display: flex; flex-direction: column; }
+
+.rail-nav {
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; padding: 0 0 38px 32px;
+}
+.rail-nav__list {
+  display: flex; flex-direction: column;
+  border-bottom: var(--rule); padding: 16px 0 10px; margin-bottom: 30px;
+}
+.rail-nav__list a {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 3px 0; border-top: 1px solid var(--hairline); color: var(--esmeralda);
+}
+.rail-nav__list a:hover { color: var(--terra-dark); }
+
+.homefoot {
+  background: var(--esmeralda); color: var(--bege);
+  padding: 26px 24px 28px; display: flex; flex-direction: column;
+}
+.homefoot__mark {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.28em;
+  text-transform: lowercase; color: var(--terra-light); margin-bottom: 16px;
+}
+.homefoot__mark:hover { color: var(--areia); }
+.homefoot > a:not(.homefoot__mark) {
+  font-size: 13px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 8px 0; border-top: 1px solid rgba(252, 239, 211, 0.22); color: var(--areia);
+}
+.homefoot > a:not(.homefoot__mark):last-of-type { border-bottom: 1px solid rgba(252, 239, 211, 0.22); }
+.homefoot > a:not(.homefoot__mark):hover { color: var(--terra-light); }
+.homefoot__legal { font-size: 12px; font-weight: 800; letter-spacing: 0.1em; color: var(--ink-dark-bg); margin-top: 18px; }
+.homefoot__design {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--bege-areia); margin-top: 6px;
+}
+
+/* the lead block, per the design */
+.lead__kicker {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--terra-dark); margin-bottom: 14px;
+}
+.lead__more {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--terra-dark); padding-bottom: 6px; border-bottom: 3px double var(--terra-dark);
+}
+.lead__more:hover { color: var(--areia); border-bottom-color: var(--areia); }
+
 /* ---------- homepage ------------------------------------------------- */
 
 .lead { padding-bottom: 38px; border-bottom: 1px solid var(--hairline); margin-bottom: 34px; }
+.lead {
+  padding-bottom: 38px; border-bottom: 1px solid var(--hairline); margin-bottom: 34px;
+}
 .lead__title {
   font-size: clamp(54px, 6.8vw, 104px); line-height: 0.99; font-weight: 700;
-  letter-spacing: 1px; margin: 14px 0 26px; max-width: 14ch; color: var(--areia);
+  letter-spacing: 1px; margin: 0 0 26px; max-width: 14ch; color: var(--areia);
 }
+.lead__title a { color: inherit; }
+.lead__split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 32px; align-items: start; }
 .lead__byline {
   font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--meta); margin-bottom: 24px;
@@ -303,44 +380,20 @@ main { display: block; }
 .lead__split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 32px; align-items: start; }
 .lead__dek { font-size: 21px; line-height: 1.55; font-weight: 500; color: var(--dek); margin-bottom: 18px; }
 
-/* Homepage-only, wide viewports only: the nav-in-rail replaces the standalone
-   masthead here — hidden above 1080px, where the rail is visible (see the
-   tablet breakpoint below). Below that, the masthead (or .mhead on phones)
-   is the only nav, so it must stay visible. */
-@media (min-width: 1081px) {
-  body.home .masthead { display: none; }
-}
-
-/* Homepage-only: replaces the standalone masthead. A stacked, left-aligned,
-   underlined section nav sits above a two-tone "vox meridian" mark, both
-   right-aligned in the rail beside the lead headline. */
 .nameplate {
-  display: flex; flex-direction: column; align-items: flex-end;
-  gap: clamp(14px, 1.8vw, 26px); height: 100%;
-}
-.nameplate__nav {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
-}
-.nameplate__nav a {
-  color: var(--esmeralda); font-size: 11px; font-weight: 800;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  text-decoration: underline; text-underline-offset: 3px;
-}
-.nameplate__nav a:hover, .nameplate__nav a[aria-current='page'] { color: var(--terra-dark); }
-.nameplate__mark {
   display: flex; flex-direction: row-reverse; align-items: flex-start;
-  justify-content: flex-end; gap: clamp(10px, 1.2vw, 18px); flex: 1 1 auto; min-height: 0;
+  justify-content: flex-end; gap: clamp(10px, 1.2vw, 18px);
 }
 .nameplate__word {
-  writing-mode: vertical-rl; font-size: clamp(36px, 4.8vw, 82px); font-weight: 800;
-  letter-spacing: -0.02em; line-height: 0.95; white-space: nowrap; text-transform: lowercase;
+  writing-mode: vertical-rl; font-size: clamp(82px, 10vw, 168px); font-weight: 800;
+  letter-spacing: -0.055em; line-height: 0.95; white-space: nowrap; text-transform: lowercase;
   /* vertical-rl + nowrap means every extra character adds a full em of HEIGHT.
-     Sized so "vox meridian" in full fits comfortably under the cap below at
-     realistic viewport heights; the cap stays as a backstop for edge cases. */
-  max-height: 88vh; overflow: hidden;
+     No viewport-relative cap here: the real available room is the homegrid
+     row height (stretched to match .homegrid__main, typically 1500-2500px+
+     of lead/wire content), not the viewport — a vh-based cap clips against
+     the wrong dimension. .rail-nav's own overflow:hidden is the backstop. */
 }
 .nameplate__word em { color: var(--terra-dark); font-style: normal; }
-.nameplate__word-sub { color: var(--esmeralda); }
 .nameplate__tag {
   writing-mode: vertical-rl; font-size: clamp(17px, 1.7vw, 24px); font-weight: 700;
   letter-spacing: 0.14em; text-transform: uppercase; color: var(--esmeralda); white-space: nowrap;
@@ -644,6 +697,12 @@ main { display: block; }
 @media (max-width: 1080px) {
   :root { --pad-l: 28px; --pad-r: 28px; }
   .cols { grid-template-columns: minmax(0, 1fr); }
+  .shell { max-width: none; }
+  .homegrid { grid-template-columns: minmax(0, 1fr); }
+  .homegrid__main, .homegrid__pod { padding-right: 0; }
+  .homegrid__foot, .rail-nav { padding-left: 0; }
+  .rail-nav { order: 5; }
+  .nameplate { display: none; }
   .lead__split { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .story--photo { grid-template-columns: 120px minmax(0, 1fr); }
   .story__stamp { grid-column: 2; text-align: left; }
@@ -657,13 +716,15 @@ main { display: block; }
    ================================================================== */
 
 @media (max-width: 900px) {
-  :root { --pad-l: 20px; --pad-r: 20px; }
+  :root { --pad-l: 18px; --pad-r: 18px; }
 
   body { font-size: 17px; }
 
   /* the desktop masthead is replaced, not restacked */
   .mhead { display: block; }
   .masthead { display: none; }
+  .rail-nav__list { display: none; }
+  .homegrid__main { padding-top: 14px; }
 
   /* lead photo goes full-bleed above the headline */
   .lead__split { display: flex; flex-direction: column; }
@@ -671,6 +732,7 @@ main { display: block; }
   .lead__split .mount { margin-left: calc(var(--pad-l) * -1); margin-right: calc(var(--pad-r) * -1); }
   .lead__split .mount--4x3 .mount__well { aspect-ratio: 3 / 2; }
   .lead { padding-bottom: 26px; }
+  .nameplate { display: none; }
 
   .datebar__inner { flex-direction: column; align-items: stretch; }
   .datebar__date {

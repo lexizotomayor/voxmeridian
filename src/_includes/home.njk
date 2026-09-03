@@ -3,17 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% if title %}{{ title }} · {{ site.name }}{% else %}{{ site.name }} · {{ site.tagline }}{% endif %}</title>
-<meta name="description" content="{{ dek or site.description }}">
-<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+<title>{{ site.name }} · {{ site.tagline }}</title>
+<meta name="description" content="{{ site.description }}">
+<link rel="canonical" href="{{ site.url }}/">
 {% if not site.indexable %}<meta name="robots" content="noindex, nofollow">{% endif %}
 <meta property="og:site_name" content="{{ site.name }}">
-<meta property="og:title" content="{{ title or site.name }}">
-<meta property="og:description" content="{{ dek or site.description }}">
-<meta property="og:type" content="{% if layout == 'article.njk' %}article{% else %}website{% endif %}">
-<meta property="og:url" content="{{ site.url }}{{ page.url }}">
-{% if image %}<meta property="og:image" content="{{ site.url }}{{ image }}">{% endif %}
-<meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="{{ site.name }}">
+<meta property="og:description" content="{{ site.description }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ site.url }}/">
 <link rel="alternate" type="application/rss+xml" title="{{ site.name }}" href="/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,8 +44,7 @@
 </div>
 {% endif %}
 
-{# Phone composition (<=900px). The design switches to a different header here,
-   not a reflow of the desktop one — so both exist and CSS shows one. #}
+{# Phone header — the design's isNarrow composition. #}
 <details class="mhead">
   <summary class="mhead__bar">
     <a href="/" class="mhead__mark">vox meridian</a>
@@ -60,23 +57,13 @@
   </nav>
 </details>
 
-<header class="masthead">
-  <div class="shell masthead__bar">
-    <a href="/" class="wordmark" title="{{ site.name }} home"><em>vox</em> meridian</a>
-    <nav class="topnav" aria-label="Sections">
-      {% for item in nav %}
-      <a href="{{ item.url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>{{ item.name }}</a>
-      {% endfor %}
-    </nav>
-  </div>
-</header>
-
+{# Date + ticker strip. On the homepage this is the ONLY top furniture — the
+   design carries the wordmark and the section list in the right rail instead
+   of a horizontal masthead. #}
 <div class="datebar">
   <div class="shell datebar__inner">
     <div class="datebar__date">{{ build.date | readableDateFull }}</div>
     <div class="ticker" aria-label="Market ticker">
-      {# Two identical tracks: the marquee translates -50% so the loop is seamless.
-         The second copy is aria-hidden so screen readers hear the row once. #}
       <div class="ticker__marquee">
         <div class="ticker__track">
           {% for t in ticker %}
@@ -101,50 +88,7 @@
   </div>
 </div>
 
-{% if sample %}
-<div class="samplebar">
-  <div class="shell samplebar__inner">
-    <span class="samplebar__tag">Placeholder</span>
-    <span class="samplebar__text">This page is a layout sample, not reporting. The design is real; the words are stand-ins while the newsroom fills the paper.</span>
-  </div>
-</div>
-{% endif %}
-
-{# Opinion / Explainers tab strip. Any page setting "tabs: true" in its front
-   matter gets it, and the current URL takes the active tab. No JavaScript:
-   these are two real pages, so the tabs survive a hard reload and deep links. #}
-{% if tabs %}
-<div class="tabs">
-  <nav class="shell tabs__inner" aria-label="Opinion and explainers">
-    <a href="/opinion/"{% if page.url == '/opinion/' or layout == 'column.njk' %} aria-current="page"{% endif %}>Opinion</a>
-    <a href="/explainers/"{% if page.url == '/explainers/' or layout == 'explainer.njk' %} aria-current="page"{% endif %}>Explainers</a>
-  </nav>
-</div>
-{% endif %}
-
-<main id="main">
 {{ content | safe }}
-</main>
-
-<footer class="sitefoot">
-  <div class="shell sitefoot__inner">
-    <div>
-      <div class="wordmark"><em>vox</em> meridian</div>
-      <div class="sitefoot__tag">{{ site.tagline }}</div>
-    </div>
-    <div class="sitefoot__col">
-      <div class="sitefoot__links">
-        <a href="/about/">About</a>
-        <a href="/subscribe/">Subscribe</a>
-        <a href="/wire/">The Wire</a>
-        <a href="/rss/">RSS</a>
-        <a href="/contact/">Contact</a>
-      </div>
-      <div class="sitefoot__legal">&copy; {{ build.date | yearOnly }} Vox Meridian Publications LLC. All rights reserved.</div>
-      <div class="sitefoot__design">Design &copy; {{ build.date | yearOnly }} Lexi Zotomayor</div>
-    </div>
-  </div>
-</footer>
 
 </body>
 </html>
