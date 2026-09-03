@@ -1,0 +1,146 @@
+---
+layout: base.njk
+pagination:
+  data: sections
+  size: 1
+  alias: section
+eleventyExcludeFromCollections: true
+permalink: "/{{ section | slugify }}/"
+---
+{% set posts = [] %}
+{% for post in collections.articles %}
+  {% if post.data.section == section %}{% set posts = (posts.push(post), posts) %}{% endif %}
+{% endfor %}
+{% set top = posts[0] %}
+
+<div class="shell page">
+
+  <div class="hero">
+    <div>
+      <div class="chip">{{ section }}</div>
+      <h1 class="hero__title">{{ section }}</h1>
+      <p class="hero__dek">{{ section }} across the Pacific — our own reporting where we have it, and the region's newsrooms credited and linked where we do not.</p>
+    </div>
+    <div class="rail" aria-hidden="true">
+      <div class="rail__stack">
+        <div class="rail__label">{% if posts.length %}{{ posts.length }} filed{% else %}On the wire{% endif %}</div>
+        <div class="rail__line"></div>
+        <div class="rail__sub">Section</div>
+      </div>
+      <div class="rail__word">{{ section | lower | replace("security & diplomacy", "security") | replace("business", "business") | replace("politics", "politics") }}</div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="cols__main">
+      {% if not top %}
+      <h2 class="rule-head">{{ section }} on the wire</h2>
+      <p style="font-size:15px;line-height:1.55;color:var(--meta);padding:14px 0 6px;max-width:60ch">We have not filed our own {{ section | lower }} reporting yet. What follows is what other newsrooms reported, summarised by us and credited to them.</p>
+      <div class="wire">
+        {% for it in wire.all %}
+          {% if it.section == section %}
+          <article class="wire__item">
+            <div class="wire__stamp">
+              <div class="wire__time">{{ it.time }}</div>
+              <div class="wire__place">{{ it.place }}</div>
+            </div>
+            <div>
+              <h3 class="wire__title">{{ it.title }}</h3>
+              <p class="wire__summary">{{ it.summary }}</p>
+              <div class="wire__links">
+                <a href="{{ it.url }}" rel="noopener" class="wire__via">Read it at {{ it.source }} &rarr;</a>
+                {% if it.oursHref %}
+                <a href="{{ it.oursHref }}" class="wire__ours">Our explainer: {{ it.oursLabel }}</a>
+                {% endif %}
+              </div>
+            </div>
+          </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if top %}
+      <article style="padding-bottom:clamp(28px,3vw,40px);border-bottom:var(--rule)">
+        {% if top.data.image %}
+        <figure style="margin-bottom:22px">
+          <div class="mount mount--21x9">
+            <div class="mount__well"><img src="{{ top.data.image }}" alt="{{ top.data.imageAlt or '' }}"></div>
+          </div>
+        </figure>
+        {% endif %}
+        <h2 style="font-size:clamp(28px,3.2vw,46px);line-height:1.04;font-weight:800;letter-spacing:-0.01em;color:var(--areia);margin-bottom:14px;max-width:24ch"><a href="{{ top.url }}" style="color:var(--areia)">{{ top.data.title }}</a></h2>
+        <p style="font-size:19px;line-height:1.5;color:var(--dek);margin-bottom:14px;max-width:56ch">{{ top.data.dek }}</p>
+        <div class="story__meta">{{ top.data.author }} · {{ top.date | timeAgo }}</div>
+      </article>
+      {% endif %}
+
+      {% if posts.length > 1 %}
+      <h2 class="rule-head" style="margin-top:clamp(30px,3.2vw,44px)">More {{ section }} reporting</h2>
+      {% endif %}
+      <div class="storylist">
+        {% for post in posts %}
+          {% if loop.index0 > 0 %}
+          <article class="story">
+            <div>
+              <a href="{{ post.url }}"><div class="story__title">{{ post.data.title }}</div></a>
+              <div class="story__meta">{{ post.data.author }} · {{ post.date | timeAgo }}</div>
+            </div>
+            {% if post.data.image %}
+            <a href="{{ post.url }}" class="mount mount--sm story__thumb" aria-hidden="true" tabindex="-1">
+              <div class="mount__well"><img src="{{ post.data.image }}" alt=""></div>
+            </a>
+            {% endif %}
+          </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% if top %}
+      <h2 class="rule-head" style="margin-top:clamp(30px,3.2vw,44px)">{{ section }} on the wire</h2>
+      <div class="wire">
+        {% for it in wire.all %}
+          {% if it.section == section %}
+          <article class="wire__item">
+            <div class="wire__stamp">
+              <div class="wire__time">{{ it.time }}</div>
+              <div class="wire__place">{{ it.place }}</div>
+            </div>
+            <div>
+              <h3 class="wire__title">{{ it.title }}</h3>
+              <p class="wire__summary">{{ it.summary }}</p>
+              <div class="wire__links">
+                <a href="{{ it.url }}" rel="noopener" class="wire__via">Read it at {{ it.source }} &rarr;</a>
+              </div>
+            </div>
+          </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <aside class="cols__aside">
+      <div>
+        <h2 class="rule-head">Other sections</h2>
+        <div class="sidelist">
+          <a href="/wire/"><div class="sidelist__title">The Wire</div><div class="sidelist__meta">Every section, each morning</div></a>
+          {% for s in sections %}
+            {% if s != section %}
+            <a href="/{{ s | slugify }}/"><div class="sidelist__title">{{ s }}</div></a>
+            {% endif %}
+          {% endfor %}
+          <a href="/explainers/"><div class="sidelist__title">Explainers</div></a>
+          <a href="/opinion/"><div class="sidelist__title">Opinion</div></a>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">The daily brief</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg);margin-bottom:18px">Three stories every weekday morning. Free.</p>
+        <a href="/subscribe/" class="btn btn--light">Sign up</a>
+      </div>
+    </aside>
+  </div>
+
+</div>

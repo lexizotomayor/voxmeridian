@@ -1,0 +1,159 @@
+---
+layout: base.njk
+title: Thank you
+dek: Your message reached the newsroom.
+permalink: /thanks/
+eleventyExcludeFromCollections: true
+---
+<div class="shell page">
+
+  <div class="hero">
+    <div>
+      <div class="chip" id="chip">Received</div>
+      <h1 class="hero__title" id="headline">Thank you — that reached the newsroom</h1>
+      <p class="hero__dek" id="dek">Every message is read by an editor, not a filter.</p>
+    </div>
+    <div class="rail" aria-hidden="true">
+      <div class="rail__stack">
+        <div class="rail__label">{{ site.founded }}</div>
+        <div class="rail__line"></div>
+        <div class="rail__sub" id="raillabel">A person will reply</div>
+      </div>
+      <div class="rail__word" id="railword">read</div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="cols__main">
+      <h2 class="rule-head">What happens next</h2>
+      <div class="glossary" id="next">
+        <div class="glossary__row" style="grid-template-columns:minmax(104px,auto) minmax(0,1fr)">
+          <div class="kicker">Within the hour</div>
+          <div class="glossary__plain">Corrections are reviewed the same day, every day. If we got something wrong, we will say so at the top of the story.</div>
+        </div>
+        <div class="glossary__row" style="grid-template-columns:minmax(104px,auto) minmax(0,1fr)">
+          <div class="kicker">Two working days</div>
+          <div class="glossary__plain">Tips, pitches, and general enquiries get a reply from the desk that handles them.</div>
+        </div>
+        <div class="glossary__row" style="grid-template-columns:minmax(104px,auto) minmax(0,1fr)">
+          <div class="kicker">If it is sensitive</div>
+          <div class="glossary__plain">Reach us on Signal at +1 670 555 0142 from a personal device — never a work phone or work email.</div>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:clamp(28px,3vw,40px)">
+        <a href="/" class="btn">Back to the front page</a>
+        <a href="/wire/" class="btn btn--ghost">Read The Wire</a>
+      </div>
+
+      <div class="panel" style="margin-top:clamp(36px,3.8vw,54px)">
+        <div class="kicker kicker--light" style="margin-bottom:12px">A note on your details</div>
+        <p style="font-size:16px;line-height:1.6;color:var(--ink-dark-bg);margin:0">We store your address to send what you asked for and nothing else. No trackers in our email, no list rentals, and one-click unsubscribe in every issue. Reply to any message and a person reads it.</p>
+      </div>
+    </div>
+
+    <aside class="cols__aside">
+      <div>
+        <h2 class="rule-head">While you are here</h2>
+        <div class="sidelist">
+          {% for post in collections.everything %}
+            {% if loop.index0 < 4 %}
+            <a href="{{ post.url }}">
+              <div class="kicker" style="margin-bottom:6px">{{ post.data.section or 'Opinion' }}</div>
+              <div class="sidelist__title">{{ post.data.title }}</div>
+              <div class="sidelist__meta">{{ post.date | timeAgo }}</div>
+            </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">Read us anywhere</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg);margin-bottom:18px">Open feeds for every section. No account, no algorithm deciding what you see.</p>
+        <a href="/rss/" class="btn btn--light">Get the feeds</a>
+      </div>
+    </aside>
+  </div>
+
+</div>
+
+<script>
+/* Netlify sends the reader here after a form post. The ?form= value picks the copy. */
+(function () {
+  var copy = {
+    newsletter: {
+      chip: 'Signed up',
+      word: 'sent',
+      rail: 'You are on the list',
+      headline: 'You are on the list. First brief lands tomorrow',
+      dek: 'Three stories that matter across the Pacific and Washington, every weekday morning. Free, no paywall, no algorithm.',
+      next: [
+        ['Now', 'A one-line confirmation is on its way. If it is not there in ten minutes, check spam and mark us as safe.'],
+        ['Tomorrow, 6am ChST', 'The first daily brief arrives — three stories, each in a paragraph, with links to the full reporting.'],
+        ['Any time', 'One-click unsubscribe sits at the top of every issue, not buried at the bottom.']
+      ]
+    },
+    letter: {
+      chip: 'Letter received',
+      word: 'heard',
+      rail: 'An editor reads every one',
+      headline: 'Your letter is with the opinion desk',
+      dek: 'Letters are read by an editor and the sharpest are published, edited only for length and clarity.',
+      next: [
+        ['This week', 'An editor reads it. We publish a selection each week alongside the column it answers.'],
+        ['If we publish', 'We write to you first, and we never publish your email address or exact location.'],
+        ['Either way', 'Disagreement is the point. We would rather print a sharp objection than a compliment.']
+      ]
+    },
+    question: {
+      chip: 'Question received',
+      word: 'asked',
+      rail: 'We answer or we fix the page',
+      headline: 'Your question is with the explainers desk',
+      dek: 'Explainers get rewritten when readers tell us a passage does not land.',
+      next: [
+        ['Two working days', 'You get an answer from whoever wrote the explainer.'],
+        ['If the page is unclear', 'We rewrite the passage rather than defending it, and note the change at the foot.'],
+        ['If it is a new subject', 'It goes on the list of documents to read plainly. Many explainers started as a reader question.']
+      ]
+    },
+    contact: {
+      chip: 'Message received',
+      word: 'read',
+      rail: 'A person will reply',
+      headline: 'Your message reached the newsroom',
+      dek: 'Every message is read by an editor, not a filter. Tips and corrections go to the top of the queue.'
+    }
+  };
+
+  var kind = new URLSearchParams(window.location.search).get('form');
+  var c = copy[kind];
+  if (!c) return;
+
+  document.getElementById('chip').textContent = c.chip;
+  document.getElementById('railword').textContent = c.word;
+  document.getElementById('raillabel').textContent = c.rail;
+  document.getElementById('headline').textContent = c.headline;
+  document.getElementById('dek').textContent = c.dek;
+
+  if (c.next) {
+    var host = document.getElementById('next');
+    host.innerHTML = '';
+    c.next.forEach(function (row) {
+      var wrap = document.createElement('div');
+      wrap.className = 'glossary__row';
+      wrap.style.gridTemplateColumns = 'minmax(104px,auto) minmax(0,1fr)';
+      var when = document.createElement('div');
+      when.className = 'kicker';
+      when.textContent = row[0];
+      var what = document.createElement('div');
+      what.className = 'glossary__plain';
+      what.textContent = row[1];
+      wrap.appendChild(when);
+      wrap.appendChild(what);
+      host.appendChild(wrap);
+    });
+  }
+})();
+</script>

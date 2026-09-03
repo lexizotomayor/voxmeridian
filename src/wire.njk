@@ -1,0 +1,97 @@
+---
+layout: base.njk
+title: The Wire
+dek: What the region reported today, credited and linked. Not our reporting — theirs.
+permalink: /wire/
+eleventyExcludeFromCollections: true
+---
+<div class="shell page">
+
+  <div class="hero">
+    <div>
+      <div class="chip">The Wire</div>
+      <h1 class="hero__title">What the region reported today, credited and linked</h1>
+      <p class="hero__dek">Not our reporting — theirs. Short summaries of what other newsrooms broke across the Pacific, each one naming the outlet that did the work and linking straight to it.</p>
+    </div>
+    <div class="rail" aria-hidden="true">
+      <div class="rail__stack">
+        <div class="rail__label">Updated {{ build.date | readableDate }}</div>
+        <div class="rail__line"></div>
+        <div class="rail__sub">Credit where it is due</div>
+      </div>
+      <div class="rail__word">wire</div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="cols__main">
+
+      {% for day in wire.days %}
+      <section style="margin-bottom:clamp(30px,3.2vw,46px)">
+        <h2 class="rule-head">{{ day.label }}</h2>
+        <div class="wire">
+          {% for it in day.items %}
+          <article class="wire__item">
+            <div class="wire__stamp">
+              <div class="wire__time">{{ it.time }}</div>
+              <div class="wire__place">{{ it.place }}</div>
+            </div>
+            <div>
+              {% if it.section %}<div class="kicker" style="margin-bottom:7px"><a href="/{{ it.section | slugify }}/" style="color:var(--terra-dark)">{{ it.section }}</a></div>{% endif %}
+              <h3 class="wire__title">{{ it.title }}</h3>
+              <p class="wire__summary">{{ it.summary }}</p>
+              <div class="wire__links">
+                <a href="{{ it.url }}" rel="noopener" target="_blank" class="wire__via">Read it at {{ it.source }} &rarr;</a>
+                {% if it.oursHref %}
+                <a href="{{ it.oursHref }}" class="wire__ours">Our explainer: {{ it.oursLabel }}</a>
+                {% endif %}
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+      {% endfor %}
+
+      <div class="btn-row">
+        <a href="/subscribe/" class="btn">Get it by email</a>
+        <a href="/feed.xml" class="btn btn--ghost">Subscribe by RSS</a>
+      </div>
+    </div>
+
+    <aside class="cols__aside">
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:14px">What The Wire is</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg);margin-bottom:14px">Every item here was reported by someone else. We read the region's newsrooms each morning, summarise what matters for a Pacific reader, and send you to the original.</p>
+        <p style="font-size:15px;line-height:1.6;color:var(--bege-areia)">Our own reporting carries a Vox Meridian byline and never appears in this feed.</p>
+      </div>
+
+      <div>
+        <h2 class="rule-head">Who we read</h2>
+        <div class="bureaus" style="margin-top:4px">
+          {% for o in outlets %}
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--hairline)">
+            <a href="{{ o.url }}" rel="noopener" style="font-size:15px;font-weight:700;color:var(--esmeralda);border-bottom:1px solid var(--terra-dark)">{{ o.name }}</a>
+            <span class="sidelist__meta" style="margin:0">{{ o.beat }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="rule-head">Our own work</h2>
+        <div class="sidelist">
+          {% for ex in collections.explainers %}
+            {% if loop.index0 < 3 %}
+            <a href="{{ ex.url }}">
+              <div class="kicker" style="margin-bottom:6px">Explainer No. {{ ex.data.number }}</div>
+              <div class="sidelist__title">{{ ex.data.title }}</div>
+            </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</div>

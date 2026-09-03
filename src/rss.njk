@@ -1,0 +1,57 @@
+---
+layout: base.njk
+title: Feeds
+dek: Open feeds for every section. No account, no algorithm deciding what you see.
+permalink: /rss/
+eleventyExcludeFromCollections: true
+---
+<div class="shell page">
+
+  <div class="hero">
+    <div>
+      <div class="chip">Feeds</div>
+      <h1 class="hero__title">Read us anywhere, on your terms</h1>
+      <p class="hero__dek">Every feed below is open and complete — full deks, no truncation, no tracking pixels. Paste a URL into any reader.</p>
+    </div>
+    <div class="rail" aria-hidden="true">
+      <div class="rail__stack">
+        <div class="rail__label">Open by default</div>
+        <div class="rail__line"></div>
+        <div class="rail__sub">No account needed</div>
+      </div>
+      <div class="rail__word">feeds</div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="cols__main">
+      <h2 class="rule-head">Available feeds</h2>
+      <div class="defs">
+        <div class="defs__item">
+          <div class="defs__name">Everything</div>
+          <div class="defs__what">{{ site.url }}/feed.xml</div>
+        </div>
+        {% for s in sections %}
+        <div class="defs__item">
+          <div class="defs__name">{{ s }}</div>
+          <div class="defs__what">{{ site.url }}/{{ s | slugify }}/feed.xml</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="prose" style="margin-top:clamp(30px,3.2vw,44px)">
+        <h2>Republishing</h2>
+        <p>Classrooms, libraries, and other Pacific newsrooms may republish our reporting with attribution and a link. Commercial republication needs a note to <a href="mailto:newsroom@voxmeridian.online">newsroom@voxmeridian.online</a> first — usually a formality.</p>
+      </div>
+    </div>
+
+    <aside class="cols__aside">
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">New to feeds?</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg);margin-bottom:18px">A reader app checks these addresses for you and shows new stories in order. Nothing ranks them, nothing is hidden, and we learn nothing about you.</p>
+        <a href="/subscribe/" class="btn btn--light">Or take the email brief</a>
+      </div>
+    </aside>
+  </div>
+
+</div>

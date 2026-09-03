@@ -1,73 +1,170 @@
-# Vox Meridian News Website
+# Vox Meridian — v2 site
 
-## Overview
-Vox Meridian is a Pacific/US-focused news site (business, security & diplomacy, politics) with daily
-coverage from overseas writers, standard news-site advertising, and reader signup/support pages.
-This package is a **working Eleventy (11ty) starter** wired to **Decap CMS** (free, git-based CMS),
-ready to push to GitHub and deploy on Netlify.
+Eleventy + Netlify. Design language: Neue Typografie (see `CLAUDE.md` in the design project for
+the shipping palette). Deployed at **voxmeridian.online**.
 
-## About the design files
-The `Vox Meridian - *.dc.html` files in the parent project are **HTML design references** —
-high-fidelity mockups of the homepage, article page, section page, newsletter/support/contact pages.
-This folder is the **real, buildable implementation** of that design as a static site: same layout,
-colors (navy #1f3b5c / maroon #9a1b3a / off-white #f7f6f2), and Lora + Public Sans type pairing,
-translated into Eleventy templates + plain CSS (no build step beyond Eleventy itself).
+---
 
-## Fidelity
-High-fidelity. Colors, type, and layout match the approved mockups. Treat the `.dc.html` files as the
-visual source of truth if anything here needs adjusting.
+## Uploading this to GitHub
 
-## What's included
-- `src/_includes/base.njk` — shared header/nav/footer shell
-- `src/_includes/article.njk` — article page layout
-- `src/index.njk` — homepage (lead story + grid, pulled from `src/articles/*.md`)
-- `src/section.njk` — auto-generates one page per section (Business, Security & Diplomacy, etc.)
-- `src/articles/*.md` — 5 sample articles (front matter + markdown body) matching the mockups
-- `src/css/style.css` — all design tokens (colors, fonts, spacing) as plain CSS
-- `admin/config.yml` + `admin/index.html` — Decap CMS setup, so your overseas writers get a
-  browser-based editor (no code, no local setup) that commits directly to GitHub
-- `netlify.toml` — Netlify build config
+Netlify is already connected to `lexizotomayor/voxmeridian` and builds on every push to
+`main` — build command `npx @11ty/eleventy`, publish directory `_site`, base directory blank.
+You do not touch Netlify at all. You put files in GitHub; Netlify rebuilds.
 
-## Local setup
+1. Download this folder (`design_handoff_v2`) and unzip it.
+2. Go to **github.com/lexizotomayor/voxmeridian**, make sure the branch selector says `main`.
+3. **Add file → Upload files.**
+4. Drag in the *contents* of the unzipped folder — `src/`, `admin/`, `.eleventy.js`,
+   `netlify.toml`, `package.json`, `README.md`. Not the folder itself: the files must land at
+   the repository root, next to where `package.json` already sits.
+5. GitHub will ask about replacing existing files. Replace them — that is the point.
+6. Commit message: `v2 design: templates, styles, wire`. Click **Commit changes**.
+7. Netlify starts building within seconds. Watch **Deploys**. About two minutes.
+
+If the deploy fails, open the log and read the last ten lines — it is almost always a typo in a
+template name or a missing front-matter field, and the log names the file.
+
+### Files you can safely delete from the repo after uploading
+
+The v1 templates, if any are still there: `src/section.njk` (replaced by `sections.njk`),
+`src/newsletter.njk` and `src/support.njk` (replaced by `subscribe.njk`), and
+`src/_includes/base.njk`'s old version (overwritten).
+
+---
+
+## Demo mode
+
+`src/_data/site.js` has two independent flags.
+
+`preview: true` — demo notice:
+
+- an esmeralda **For demo use** bar sits above the masthead on every page, linking to the
+  explanation at `/about/#preview`
+- the about page carries the "Where we are right now" disclosure
+- the site is fully live and shareable in this state; it simply says what it is
+
+`indexable: false` — search engines:
+
+- every page carries `<meta name="robots" content="noindex, nofollow">`
+- `/robots.txt` disallows all crawlers
+
+Flip `indexable` to `true` when you want the demo found and indexed — you can do that
+while the demo bar is still up. Edit the bar's wording in `site.js` (`previewNote`).
+- `/about/` shows a "Where we are right now" section
+
+This is what lets you launch for investors without publishing fiction as journalism: the
+site is complete and demonstrably working, and every stand-in says so on the page.
+
+**On launch day:** replace the placeholder content, then set `preview: false`. That single
+change removes the bar, the noindex tags, and the crawler block site-wide.
+
+## The model: wire-first
+
+The Wire leads the nav and fills the site. Each item is a headline, a two-sentence summary
+written by us, a dateline, a section, and a link out to the newsroom that reported it. Nothing
+in the wire is presented as ours.
+
+Wire items carry a `section` field, so:
+
+- `/wire/` shows everything, newest first, each item tagged with its section
+- `/business/`, `/security-and-diplomacy/`, `/politics/` show our own reporting first (when
+  there is any), then the wire items for that section
+- the homepage leads with an explainer — our own work — and runs the day's wire beneath it
+
+Adding an item: edit `src/_data/wire.js` (or the CMS "The Wire" collection). Required on every
+item: `title`, `summary`, `source`, `url`, `time`, `place`, `section`. Optional: `oursLabel`
+and `oursHref` to point at a related explainer — that is the link that turns someone else's
+news into a reader for your work.
+
+Write your own summaries. Do not paste the outlet's dek: two sentences in your own words,
+credited and linked, is ordinary aggregation practice; reproducing their copy is not.
+
+## ⚠ Before you make the site public
+
+`src/articles/` is now empty — the fabricated sample stories were deleted. Files in
+`src/columns/` and `src/explainers/` are **placeholder text**
+and carries `sample: true` in its front matter, which renders a terracotta banner on the page
+reading "Sample layout content." They exist so the templates have something to lay out.
+
+Do one of these before launch:
+
+- **Replace them** with real reporting and set `sample: false` (or delete the line), or
+- **Delete them** and publish with The Wire and real explainers only.
+
+Do not publish them as-is. They describe events in a way that reads like reporting and none of
+it was reported.
+
+The Wire items in `src/_data/wire.js` are **real**: each one summarises a story another
+newsroom published, in our words, and links the actual article. Four rules are written at the
+top of that file — the important one is that no item ships without a working outbound URL,
+because a credit with a dead or generic link is a false credit. Outlet names in the "Who we
+read" sidebar come from `src/_data/outlets.js` and link to each newsroom; add an outlet there
+the first time it appears in the feed.
+
+---
+
+## Structure
+
+```
+.eleventy.js          filters, collections, passthrough copy
+netlify.toml          build command + publish dir
+admin/                Decap CMS (config.yml is the schema writers see)
+src/
+  _data/              site, nav, sections, ticker, staff, desks, plans, wire, outlets, build
+  _includes/          base.njk + article/column/explainer layouts
+  articles/           reported stories (markdown)
+  columns/            opinion columns (markdown)
+  explainers/         explainers (markdown, with glossary + sources)
+  css/style.css       the whole design; media queries at 1080 and 760
+  images/             photographs and hedcuts
+  index.njk           homepage
+  sections.njk        generates /business/, /security-and-diplomacy/, /politics/
+  wire.njk            /wire/ — the aggregation feed
+  opinion.njk         /opinion/
+  explainers.njk      /explainers/
+  about.njk subscribe.njk rss.njk contact.njk thanks.njk
+  feed.xml.njk        /feed.xml (everything)
+  section-feed.njk    /<section>/feed.xml
+  robots.txt.njk sitemap.xml.njk
+```
+
+## Running it locally (optional)
+
 ```
 npm install
-npm run serve      # preview at localhost:8080
-npm run build      # outputs static site to _site/
+npm run serve
 ```
 
-## Launching on Netlify (voxmeridian.online)
-1. **Push this folder to a new GitHub repo** (e.g. `vox-meridian`). If you're not comfortable with
-   git, ask a developer for 15 minutes, or use GitHub's "upload files" web UI for the initial commit.
-2. **Netlify → Add new site → Import an existing project** → pick the GitHub repo. Netlify will read
-   `netlify.toml` automatically (build command `npx @11ty/eleventy`, publish folder `_site`).
-3. **Enable Netlify Identity** (Site settings → Identity → Enable). Set registration to "Invite only."
-4. **Enable Git Gateway** (Identity → Services → Git Gateway → Enable). This lets Decap CMS commit to
-   your repo on behalf of invited writers, without giving them a GitHub account.
-5. **Invite your writers**: Identity tab → Invite users → enter each writer's email. They'll get a
-   link to set a password, then log in at `https://voxmeridian.online/admin/` to write and publish
-   stories — no code, no local setup, works from anywhere.
-6. **Connect your domain**: Site settings → Domain management → Add custom domain → enter
-   `voxmeridian.online`. Netlify will show you the DNS records (usually a couple of A/CNAME records)
-   to add at your domain registrar. Netlify issues a free SSL certificate automatically once DNS
-   points to it (can take up to a few hours to propagate).
-7. **Add real images**: drop photos into `src/images/` (or have writers upload via the CMS media
-   picker) — replace the placeholder assets copied over from the mockups.
+Then open the address it prints, usually `localhost:8080`.
 
-## Ongoing cost
-- Netlify free tier covers this comfortably at typical traffic (100GB bandwidth/month free).
-- Decap CMS is free and open source — no subscription.
-- Only paid cost is the domain itself (already purchased) and, if traffic grows a lot, a Netlify
-  paid tier. This is about as inexpensive as self-hosted news publishing gets.
+## Forms
 
-## Design tokens
-- Navy: `#1f3b5c` · Maroon: `#9a1b3a` · Off-white bg: `#f7f6f2` · Ink: `#1a1a1a`
-- Headline font: Lora (serif) · Body/UI font: Public Sans (sans)
-- Sections: Business, Security & Diplomacy, Politics, Pacific, US, Opinion, Explainers
+Four Netlify forms, all with a honeypot field and all redirecting to `/thanks/` with a
+`?form=` parameter that switches the confirmation copy:
 
-## Not yet built here (next steps if wanted)
-- Ad slots are static placeholders — wire up your ad network's script tags (e.g. Google Ad Manager)
-  in `base.njk` where the `.ad-slot` divs are.
-- Newsletter/Support/Contact pages exist as mockups (`Vox Meridian - Newsletter/Support/Contact.dc.html`)
-  but aren't yet built as Eleventy templates — same pattern as `index.njk`, straightforward to add.
-- Dark mode toggle from the mockups isn't implemented here — would need a small client-side JS toggle
-  swapping a CSS class, plus a dark-mode CSS block mirroring the mockup's dark palette.
+| Form | Where | Redirect |
+| --- | --- | --- |
+| `newsletter` | /subscribe/ | /thanks/?form=newsletter |
+| `contact` | /contact/ | /thanks/?form=contact |
+| `letters` | /opinion/ and every column | /thanks/?form=letter |
+| `questions` | /explainers/ and every explainer | /thanks/?form=question |
+
+Submissions appear under **Forms** in the Netlify dashboard. To get them by email:
+Netlify → Site configuration → Forms → Form notifications → Add notification.
+
+## The CMS
+
+`/admin/` on the live site. Netlify Identity and Git Gateway are already configured from v1, so
+existing writer logins still work. Invite new writers under Netlify → Identity → Invite users.
+
+Editorial workflow is on: writers save drafts, an editor publishes. Drafts do not appear on the
+site until published.
+
+Note: the CMS `wire` and `settings` collections point at `.json` files, but the repo currently
+ships `.js` data files. Either keep editing `wire.js` by hand, or convert those two to JSON —
+whichever you prefer. Everything else in the CMS works as-is.
+
+## Sections
+
+Add a section by adding its name to `src/_data/sections.js` and `src/_data/nav.js`. The section
+page, its feed, and the nav entry are generated automatically. Existing stories keep working.

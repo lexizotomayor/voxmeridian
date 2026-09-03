@@ -1,0 +1,111 @@
+---
+layout: base.njk
+title: Opinion
+dek: Argument, clearly labelled and signed. Kept separate from our reporting.
+permalink: /opinion/
+eleventyExcludeFromCollections: true
+---
+{% set leadCol = collections.columns[0] %}
+
+<div class="shell page">
+
+  <div class="hero">
+    <div>
+      <div class="chip">Opinion</div>
+      <h1 class="hero__title">Argument, signed and kept apart from the reporting</h1>
+      <p class="hero__dek">Columns from our writers and from voices in the region. Nobody writes opinion on a beat they also report.</p>
+    </div>
+    <div class="rail" aria-hidden="true">
+      <div class="rail__stack">
+        <div class="rail__label">{{ collections.columns.length }} columns</div>
+        <div class="rail__line"></div>
+        <div class="rail__sub">Signed argument</div>
+      </div>
+      <div class="rail__word">views</div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="cols__main">
+      {% if leadCol %}
+      <article style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(20px,2.4vw,34px);align-items:start;padding-bottom:clamp(28px,3vw,40px);border-bottom:var(--rule)">
+        {% if leadCol.data.authorPhoto %}
+        <div class="mount mount--sm" style="flex:0 0 auto;width:132px">
+          <div class="mount__well" style="aspect-ratio:1/1"><img src="{{ leadCol.data.authorPhoto }}" alt="{{ leadCol.data.author }}"></div>
+        </div>
+        {% endif %}
+        <div>
+          <div class="kicker" style="margin-bottom:10px">{{ leadCol.data.author }} · {{ leadCol.data.authorRole }}</div>
+          <h2 style="font-size:clamp(28px,3.2vw,46px);line-height:1.04;font-weight:800;letter-spacing:-0.01em;color:var(--areia);margin-bottom:14px;max-width:22ch"><a href="{{ leadCol.url }}" style="color:var(--areia)">{{ leadCol.data.title }}</a></h2>
+          <p style="font-size:19px;line-height:1.5;color:var(--dek);margin-bottom:14px;max-width:52ch">{{ leadCol.data.dek }}</p>
+          <div class="story__meta">{{ leadCol.date | timeAgo }}</div>
+        </div>
+      </article>
+      {% endif %}
+
+      <h2 class="rule-head" style="margin-top:clamp(30px,3.2vw,44px)">All columns</h2>
+      <div class="storylist">
+        {% for col in collections.columns %}
+          {% if loop.index0 > 0 %}
+          <article style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:20px;align-items:center;padding:20px 0;border-bottom:1px solid var(--hairline)">
+            {% if col.data.authorPhoto %}
+            <div class="mount mount--sm" style="width:64px">
+              <div class="mount__well" style="aspect-ratio:1/1"><img src="{{ col.data.authorPhoto }}" alt=""></div>
+            </div>
+            {% endif %}
+            <div>
+              <div class="kicker" style="margin-bottom:6px">{{ col.data.author }}</div>
+              <a href="{{ col.url }}"><div class="story__title">{{ col.data.title }}</div></a>
+              <div class="story__meta">{{ col.date | timeAgo }}</div>
+            </div>
+            <span aria-hidden="true" style="font-size:20px;font-weight:800;color:var(--terra-dark)">&rarr;</span>
+          </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <section class="panel panel--split" style="margin-top:clamp(36px,3.6vw,52px)">
+        <div class="panel__rail">Letters</div>
+        <div>
+          <h2 class="panel__title">Disagree in writing</h2>
+          <p class="panel__text">Letters are read by an editor and the sharpest are published. Include your name and where you are writing from.</p>
+          <form name="letters" method="POST" action="/thanks/?form=letter" data-netlify="true" netlify-honeypot="bot-field">
+            <p class="vh"><label>Do not fill this in <input name="bot-field"></label></p>
+            <div class="field-row">
+              <label class="field"><span class="field__label">Your name</span><input type="text" name="name" required></label>
+              <label class="field"><span class="field__label">Where you are writing from</span><input type="text" name="location" required></label>
+            </div>
+            <label class="field"><span class="field__label">Email</span><input type="email" name="email" required></label>
+            <label class="field"><span class="field__label">Your letter</span><textarea name="letter" rows="4" required></textarea></label>
+            <button type="submit" class="btn btn--light">Send the letter</button>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <aside class="cols__aside">
+      <div>
+        <h2 class="rule-head">Who writes here</h2>
+        <div class="staff">
+          {% for s in staff %}
+          <div class="staff__row">
+            <div class="mount mount--sm staff__photo">
+              <div class="mount__well" style="aspect-ratio:1/1"><img src="{{ s.photo }}" alt="{{ s.name }}"></div>
+            </div>
+            <div>
+              <div class="staff__name">{{ s.name }}</div>
+              <div class="staff__role">{{ s.beat }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">Where the line sits</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg)">Opinion is argument and says so. Our reporting stays out of it. If you cannot tell which you are reading, we have failed at the layout.</p>
+      </div>
+    </aside>
+  </div>
+
+</div>

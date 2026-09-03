@@ -5,23 +5,174 @@ backend:
 media_folder: "src/images"
 public_folder: "/images"
 
+site_url: https://voxmeridian.online
+display_url: https://voxmeridian.online
+logo_url: https://voxmeridian.online/images/vox-logo.png
+
+publish_mode: editorial_workflow
+
 collections:
   - name: "articles"
-    label: "Articles"
+    label: "Reported stories"
+    label_singular: "story"
     folder: "src/articles"
     create: true
     slug: "{{slug}}"
+    preview_path: "{{slug}}/"
+    sortable_fields: ["date", "title", "section"]
+    summary: "{{title}} — {{section}}, {{author}}"
     fields:
-      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Layout", name: "layout", widget: "hidden", default: "article.njk" }
+      - { label: "Headline", name: "title", widget: "string" }
+      - { label: "Dek (one or two sentences under the headline)", name: "dek", widget: "text" }
       - label: "Section"
         name: "section"
         widget: "select"
-        options: ["Business", "Security & Diplomacy", "Politics", "Pacific", "US", "Opinion", "Explainers"]
-      - { label: "Byline (writer name)", name: "byline", widget: "string" }
-      - { label: "Byline role", name: "byline_role", widget: "string" }
-      - { label: "Author photo", name: "author_photo", widget: "image", required: false }
-      - { label: "Publish date", name: "date", widget: "datetime" }
-      - { label: "Dek (subheadline)", name: "dek", widget: "text" }
+        options: ["Business", "Security & Diplomacy", "Politics"]
+      - { label: "Author", name: "author", widget: "string" }
+      - { label: "Author role", name: "authorRole", widget: "string", required: false }
+      - { label: "Published", name: "date", widget: "datetime" }
+      - { label: "Dateline (city)", name: "dateline", widget: "string", required: false }
+      - label: "Vertical display word"
+        name: "displayWord"
+        widget: "string"
+        required: false
+        hint: "One short lowercase word set vertically beside the headline. Nine characters or fewer."
       - { label: "Lead image", name: "image", widget: "image", required: false }
+      - { label: "Image alt text", name: "imageAlt", widget: "string", required: false }
+      - { label: "Caption", name: "caption", widget: "text", required: false }
+      - label: "Sample content?"
+        name: "sample"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "Leave off for real stories. On shows a banner saying the page is placeholder."
       - { label: "Body", name: "body", widget: "markdown" }
-    layout: article.njk
+
+  - name: "columns"
+    label: "Opinion columns"
+    label_singular: "column"
+    folder: "src/columns"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{author}}"
+    fields:
+      - { label: "Layout", name: "layout", widget: "hidden", default: "column.njk" }
+      - { label: "Headline", name: "title", widget: "string" }
+      - { label: "Dek", name: "dek", widget: "text" }
+      - { label: "Writer", name: "author", widget: "string" }
+      - { label: "Writer role", name: "authorRole", widget: "string", required: false }
+      - { label: "Writer bio (one sentence)", name: "authorBio", widget: "text", required: false }
+      - { label: "Writer photo", name: "authorPhoto", widget: "image", required: false }
+      - { label: "Published", name: "date", widget: "datetime" }
+      - { label: "Vertical display word", name: "displayWord", widget: "string", required: false }
+      - { label: "Sample content?", name: "sample", widget: "boolean", default: false, required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "explainers"
+    label: "Explainers"
+    label_singular: "explainer"
+    folder: "src/explainers"
+    create: true
+    slug: "{{slug}}"
+    sortable_fields: ["number", "title"]
+    summary: "No. {{number}} — {{title}}"
+    fields:
+      - { label: "Layout", name: "layout", widget: "hidden", default: "explainer.njk" }
+      - { label: "Number in the series", name: "number", widget: "string", hint: "Two digits, e.g. 08" }
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Dek", name: "dek", widget: "text" }
+      - { label: "Author", name: "author", widget: "string" }
+      - { label: "Updated", name: "date", widget: "datetime" }
+      - { label: "Vertical display word", name: "displayWord", widget: "string", required: false }
+      - { label: "The reader's question", name: "question", widget: "text", required: false }
+      - { label: "The short answer", name: "answer", widget: "text", required: false }
+      - { label: "Lead image", name: "image", widget: "image", required: false }
+      - { label: "Image alt text", name: "imageAlt", widget: "string", required: false }
+      - { label: "Caption", name: "caption", widget: "text", required: false }
+      - label: "Key figures"
+        name: "facts"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Value", name: "value", widget: "string" }
+          - { label: "Label", name: "label", widget: "string" }
+      - label: "In plain words"
+        name: "glossary"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Term", name: "term", widget: "string" }
+          - { label: "Plain meaning", name: "plain", widget: "text" }
+      - label: "Sources"
+        name: "sources"
+        widget: "list"
+        required: false
+        hint: "Every explainer must list what it was built from."
+        fields:
+          - label: "Kind"
+            name: "kind"
+            widget: "select"
+            options: ["Primary", "Official", "Context", "Data"]
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Link", name: "url", widget: "string", required: false }
+      - { label: "Sample content?", name: "sample", widget: "boolean", default: false, required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "wire"
+    label: "The Wire"
+    files:
+      - name: "wire"
+        label: "Wire items"
+        file: "src/_data/wire.json"
+        description: "Aggregation. Every item MUST name the outlet that reported it and link to the original."
+        fields:
+          - label: "Days"
+            name: "days"
+            widget: "list"
+            fields:
+              - { label: "Day label", name: "label", widget: "string", hint: "Today, Yesterday, or a date" }
+              - label: "Items"
+                name: "items"
+                widget: "list"
+                fields:
+                  - { label: "Time", name: "time", widget: "string" }
+                  - { label: "Dateline", name: "place", widget: "string" }
+                  - { label: "Headline", name: "title", widget: "string" }
+                  - { label: "Summary (two sentences)", name: "summary", widget: "text" }
+                  - { label: "Outlet that reported it", name: "source", widget: "string" }
+                  - { label: "Link to the original", name: "url", widget: "string" }
+                  - { label: "Our related explainer — label", name: "oursLabel", widget: "string", required: false }
+                  - { label: "Our related explainer — path", name: "oursHref", widget: "string", required: false }
+
+  - name: "settings"
+    label: "Site settings"
+    files:
+      - name: "ticker"
+        label: "Market ticker"
+        file: "src/_data/ticker.json"
+        fields:
+          - label: "Rows"
+            name: "rows"
+            widget: "list"
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - { label: "Value", name: "value", widget: "string" }
+              - { label: "Move", name: "move", widget: "string" }
+              - label: "Direction"
+                name: "dir"
+                widget: "select"
+                options: ["up", "down", "flat"]
+      - name: "staff"
+        label: "Newsroom"
+        file: "src/_data/staff.json"
+        fields:
+          - label: "People"
+            name: "people"
+            widget: "list"
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Role", name: "role", widget: "string" }
+              - { label: "Beat", name: "beat", widget: "string" }
+              - { label: "Photo", name: "photo", widget: "image" }
+              - { label: "Bio", name: "bio", widget: "text" }

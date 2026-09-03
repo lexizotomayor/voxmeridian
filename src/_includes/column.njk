@@ -1,0 +1,86 @@
+---
+layout: base.njk
+---
+<article class="shell page">
+
+  <div class="hero">
+    <div>
+      <div class="kicker">Opinion · {{ author }}</div>
+      <h1 class="hero__title">{{ title }}</h1>
+      <p class="hero__dek">{{ dek }}</p>
+    </div>
+    {% if displayWord %}
+    <div class="rail" aria-hidden="true">
+      <div class="rail__stack">
+        <div class="rail__label">Column</div>
+        <div class="rail__line"></div>
+        <div class="rail__sub">{{ page.date | readableDate }}</div>
+      </div>
+      <div class="rail__word">{{ displayWord }}</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="cols">
+    <div class="cols__main">
+      <div class="panel" style="display:flex;gap:20px;align-items:center;margin-bottom:clamp(28px,3vw,40px)">
+        {% if authorPhoto %}
+        <div class="mount mount--sm" style="flex:0 0 96px">
+          <div class="mount__well" style="aspect-ratio:1/1"><img src="{{ authorPhoto }}" alt="{{ author }}"></div>
+        </div>
+        {% endif %}
+        <div>
+          <div style="font-size:21px;font-weight:800;color:var(--areia);letter-spacing:-0.01em">{{ author }}</div>
+          <div class="kicker kicker--light" style="margin:6px 0 8px">{{ authorRole }}</div>
+          <div style="font-size:14px;line-height:1.5;color:var(--bege-areia);max-width:52ch">{{ authorBio }}</div>
+        </div>
+      </div>
+
+      <div class="prose">
+        {{ content | safe }}
+      </div>
+
+      <section class="panel panel--split" style="margin-top:clamp(36px,3.8vw,54px)">
+        <div class="panel__rail">Letters</div>
+        <div>
+          <h2 class="panel__title">Disagree in writing</h2>
+          <p class="panel__text">Letters are read by an editor and the sharpest are published. Include your name and where you are writing from.</p>
+          <form name="letters" method="POST" action="/thanks/?form=letter" data-netlify="true" netlify-honeypot="bot-field">
+            <p class="vh"><label>Do not fill this in <input name="bot-field"></label></p>
+            <input type="hidden" name="in-response-to" value="{{ title }}">
+            <div class="field-row">
+              <label class="field"><span class="field__label">Your name</span><input type="text" name="name" required></label>
+              <label class="field"><span class="field__label">Where you are writing from</span><input type="text" name="location" required></label>
+            </div>
+            <label class="field"><span class="field__label">Email</span><input type="email" name="email" required></label>
+            <label class="field"><span class="field__label">Your letter</span><textarea name="letter" rows="4" required></textarea></label>
+            <button type="submit" class="btn btn--light">Send the letter</button>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <aside class="cols__aside">
+      <div>
+        <h2 class="rule-head">More columns</h2>
+        <div class="sidelist">
+          {% for col in collections.columns %}
+            {% if col.url != page.url and loop.index0 < 5 %}
+            <a href="{{ col.url }}">
+              <div class="kicker" style="margin-bottom:6px">{{ col.data.author }}</div>
+              <div class="sidelist__title">{{ col.data.title }}</div>
+              <div class="sidelist__meta">{{ col.date | timeAgo }}</div>
+            </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">Opinion is separate</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg)">Columns argue. Our reporting does not. Nobody writes opinion on a beat they also report.</p>
+      </div>
+    </aside>
+  </div>
+
+</article>

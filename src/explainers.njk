@@ -1,0 +1,83 @@
+---
+layout: base.njk
+title: Explainers
+dek: Plain-language readings of the documents themselves — sources listed, every one checkable.
+permalink: /explainers/
+eleventyExcludeFromCollections: true
+---
+<div class="shell page">
+
+  <div class="hero">
+    <div>
+      <div class="chip">Explainers</div>
+      <h1 class="hero__title">The documents, read plainly and cited</h1>
+      <p class="hero__dek">Built from the agreement, the record, or the filing itself. Every explainer lists its sources at the foot of the page so you can check the reading against the text.</p>
+    </div>
+    <div class="rail" aria-hidden="true">
+      <div class="rail__stack">
+        <div class="rail__label">{{ collections.explainers.length }} in the series</div>
+        <div class="rail__line"></div>
+        <div class="rail__sub">Reference</div>
+      </div>
+      <div class="rail__word">plain</div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="cols__main">
+      <h2 class="rule-head">The series</h2>
+      <div class="storylist">
+        {% for ex in collections.explainers %}
+        <article style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 24px;align-items:start;padding:22px 0;border-bottom:1px solid var(--hairline)">
+          <div style="font-size:clamp(30px,3vw,44px);font-weight:800;letter-spacing:-0.03em;color:var(--terra-dark);line-height:0.9">{{ ex.data.number }}</div>
+          <div>
+            <a href="{{ ex.url }}"><h3 style="font-size:21px;line-height:1.24;font-weight:700;letter-spacing:0.3px;color:var(--esmeralda);margin-bottom:8px;max-width:42ch">{{ ex.data.title }}</h3></a>
+            <p style="font-size:16px;line-height:1.58;color:var(--meta);margin-bottom:10px;max-width:60ch">{{ ex.data.dek }}</p>
+            <div class="story__meta">{{ ex.data.author }} · {{ ex.data.dek | readtime }}</div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+
+      <section class="panel panel--split" style="margin-top:clamp(36px,3.6vw,52px)">
+        <div class="panel__rail">Ask us</div>
+        <div>
+          <h2 class="panel__title">What should we explain next?</h2>
+          <p class="panel__text">If a document matters to the region and nobody has read it plainly, tell us which one.</p>
+          <form name="questions" method="POST" action="/thanks/?form=question" data-netlify="true" netlify-honeypot="bot-field">
+            <p class="vh"><label>Do not fill this in <input name="bot-field"></label></p>
+            <div class="field-row">
+              <label class="field"><span class="field__label">Your name</span><input type="text" name="name" required></label>
+              <label class="field"><span class="field__label">Email</span><input type="email" name="email" required></label>
+            </div>
+            <label class="field"><span class="field__label">What needs explaining</span><textarea name="question" rows="3" required></textarea></label>
+            <button type="submit" class="btn btn--light">Send it in</button>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <aside class="cols__aside">
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">How these are built</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg);margin-bottom:14px">From primary documents, not from other coverage. Where a clause is ambiguous we say so rather than guessing at intent.</p>
+        <a href="/about/" class="btn btn--light">Our sourcing</a>
+      </div>
+
+      <div>
+        <h2 class="rule-head">Reported stories</h2>
+        <div class="sidelist">
+          {% for post in collections.articles %}
+            {% if loop.index0 < 4 %}
+            <a href="{{ post.url }}">
+              <div class="kicker" style="margin-bottom:6px">{{ post.data.section }}</div>
+              <div class="sidelist__title">{{ post.data.title }}</div>
+            </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</div>

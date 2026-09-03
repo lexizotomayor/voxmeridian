@@ -1,51 +1,159 @@
 ---
 layout: base.njk
-title: Home
+eleventyExcludeFromCollections: true
 ---
-<main>
-  <div class="content-col">
-    {% set latest = collections.articles[0] %}
-    {% if latest %}
-    <article style="padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:32px">
-      <span class="kicker">{{ latest.data.section }}</span>
-      <h1 class="headline"><a href="{{ latest.url }}">{{ latest.data.title }}</a></h1>
-      <p class="dek">{{ latest.data.dek }}</p>
-      <div class="byline-row" style="border:none;margin:0;padding:0">
-        <div class="byline-name">{{ latest.data.byline }}</div>
-      </div>
-    </article>
-    {% endif %}
+{% set lead = collections.explainers[0] %}
 
-    <div class="section-head"><h2>Latest</h2></div>
-    <div class="grid">
-      {% for article in collections.articles %}
-        {% if loop.index0 > 0 %}
-        <article class="card">
-          <a href="{{ article.url }}">
-            {% if article.data.image %}<img src="{{ article.data.image }}" alt="">{% endif %}
-            <h3>{{ article.data.title }}</h3>
-          </a>
-          <div class="byline">{{ article.data.byline }} · {{ article.data.date | timeAgo }}</div>
-        </article>
-        {% endif %}
-      {% endfor %}
+<div class="shell page">
+
+  {% if lead %}
+  <section class="lead">
+    <div class="kicker">Explainer No. {{ lead.data.number }} · our own work</div>
+    <div class="hero" style="margin-bottom:0">
+      <div>
+        <h1 class="lead__title"><a href="{{ lead.url }}" style="color:var(--areia)">{{ lead.data.title }}</a></h1>
+        <div class="lead__byline">{{ lead.data.author }} · built from the document itself</div>
+      </div>
+      <div class="nameplate" aria-hidden="true">
+        <div class="nameplate__word"><em>vox</em></div>
+        <div class="nameplate__tag">{{ site.tagline }}</div>
+      </div>
     </div>
+
+    <div class="lead__split">
+      <div>
+        {% if lead.data.image %}
+        <figure>
+          <div class="mount mount--21x9">
+            <div class="mount__well"><img src="{{ lead.data.image }}" alt="{{ lead.data.imageAlt or '' }}"></div>
+          </div>
+          {% if lead.data.caption %}<figcaption>{{ lead.data.caption }}</figcaption>{% endif %}
+        </figure>
+        {% endif %}
+      </div>
+      <div>
+        <p class="lead__dek">{{ lead.data.dek }}</p>
+        <a href="{{ lead.url }}" class="btn btn--ghost">Read the explainer</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <div class="cols">
+    <div class="cols__main">
+
+      <h2 class="rule-head">The Wire · {{ wire.days[0].label }}</h2>
+      <p style="font-size:15px;line-height:1.55;color:var(--meta);padding:14px 0 6px;max-width:60ch">What other newsrooms reported across the region. Each item names the outlet that did the work and links to the original — the summaries are ours, the reporting is theirs.</p>
+
+      <div class="wire">
+        {% for it in wire.today %}
+        <article class="wire__item">
+          <div class="wire__stamp">
+            <div class="wire__time">{{ it.time }}</div>
+            <div class="wire__place">{{ it.place }}</div>
+          </div>
+          <div>
+            {% if it.section %}<div class="kicker" style="margin-bottom:7px"><a href="/{{ it.section | slugify }}/" style="color:var(--terra-dark)">{{ it.section }}</a></div>{% endif %}
+            <h3 class="wire__title">{{ it.title }}</h3>
+            <p class="wire__summary">{{ it.summary }}</p>
+            <div class="wire__links">
+              <a href="{{ it.url }}" rel="noopener" class="wire__via">Read it at {{ it.source }} &rarr;</a>
+              {% if it.oursHref %}
+              <a href="{{ it.oursHref }}" class="wire__ours">Our explainer: {{ it.oursLabel }}</a>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+
+      <div class="btn-row" style="margin-top:24px">
+        <a href="/wire/" class="btn">The full wire</a>
+        <a href="/subscribe/" class="btn btn--ghost">Get it by email</a>
+      </div>
+
+      {% if collections.articles.length %}
+      <h2 class="rule-head" style="margin-top:clamp(34px,3.6vw,50px)">Reported by us</h2>
+      <div class="storylist">
+        {% for post in collections.articles %}
+          {% if loop.index0 < 6 %}
+          <article class="story">
+            <div>
+              <div class="kicker" style="margin-bottom:7px">{{ post.data.section }}</div>
+              <a href="{{ post.url }}"><div class="story__title">{{ post.data.title }}</div></a>
+              <div class="story__meta">{{ post.data.author }} · {{ post.date | timeAgo }}</div>
+            </div>
+            {% if post.data.image %}
+            <a href="{{ post.url }}" class="mount mount--sm story__thumb" aria-hidden="true" tabindex="-1">
+              <div class="mount__well"><img src="{{ post.data.image }}" alt=""></div>
+            </a>
+            {% endif %}
+          </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if collections.columns.length %}
+      <h2 class="rule-head" style="margin-top:clamp(34px,3.6vw,50px)">Opinion</h2>
+      <div class="storylist">
+        {% for col in collections.columns %}
+          {% if loop.index0 < 3 %}
+          <article class="story" style="grid-template-columns:auto minmax(0,1fr)">
+            {% if col.data.authorPhoto %}
+            <div class="mount mount--sm" style="width:64px">
+              <div class="mount__well" style="aspect-ratio:1/1"><img src="{{ col.data.authorPhoto }}" alt=""></div>
+            </div>
+            {% endif %}
+            <div>
+              <div class="kicker" style="margin-bottom:6px">{{ col.data.author }}</div>
+              <a href="{{ col.url }}"><div class="story__title">{{ col.data.title }}</div></a>
+            </div>
+          </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+
+    <aside class="cols__aside">
+      <div>
+        <h2 class="rule-head">Explainers</h2>
+        <div class="sidelist">
+          {% for ex in collections.explainers %}
+          <a href="{{ ex.url }}">
+            <div class="kicker" style="margin-bottom:6px">No. {{ ex.data.number }}</div>
+            <div class="sidelist__title">{{ ex.data.title }}</div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">How to read this page</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg);margin-bottom:14px">The Wire is other newsrooms' reporting, summarised by us and credited to them. Explainers and anything with a Vox Meridian byline are ours.</p>
+        <a href="/about/" class="btn btn--light">Our sourcing</a>
+      </div>
+
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">Bureaus</div>
+        <div class="bureaus">
+          {% for b in bureaus %}
+          <div class="bureaus__row">
+            <span class="bureaus__city">{{ b.city }}</span>
+            <span class="bureaus__beat">{{ b.beat }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">The daily brief</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg);margin-bottom:18px">The wire in your inbox each weekday morning. Free, no paywall.</p>
+        <a href="/subscribe/" class="btn btn--light">Sign up</a>
+      </div>
+    </aside>
   </div>
 
-  <aside class="sidebar">
-    <div class="sidebar-box">
-      <h2>Most Read</h2>
-      {% for article in collections.articles | reverse %}
-        {% if loop.index0 < 5 %}
-        <a class="most-read-row" href="{{ article.url }}" style="color:var(--ink)">
-          <span class="num">{{ loop.index }}</span>
-          <span>{{ article.data.title }}</span>
-        </a>
-        {% endif %}
-      {% endfor %}
-    </div>
-    <div class="ad-slot" style="height:250px">
-      <span>Advertisement</span><span>300 × 600</span>
-    </div>
-  </aside>
-</main>
+</div>

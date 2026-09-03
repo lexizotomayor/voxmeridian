@@ -1,31 +1,86 @@
 ---
 layout: base.njk
 ---
-<main>
-  <article class="content-col">
-    <a href="/" class="back-link">← Back to Home</a>
-    <span class="kicker">{{ section }}</span>
-    <h1 class="headline">{{ title }}</h1>
-    <p class="dek">{{ dek }}</p>
+<article class="shell page">
 
-    <div class="byline-row">
-      {% if author_photo %}<img class="avatar" src="{{ author_photo }}" alt="{{ byline }}">{% endif %}
-      <div>
-        <div class="byline-name">By {{ byline }}</div>
-        <div class="byline-meta">{{ byline_role }} · {{ date | readableDate }}</div>
+  <div class="hero">
+    <div>
+      <div class="kicker">{{ section }}</div>
+      <h1 class="hero__title">{{ title }}</h1>
+      <p class="hero__dek">{{ dek }}</p>
+      <div class="byline-strip" style="margin-top:26px">
+        <span class="byline-strip__accent">{{ author }}</span>
+        <span class="byline-strip__sep"></span>
+        <span>{{ authorRole }}</span>
+        <span class="byline-strip__sep"></span>
+        <span>{{ page.date | readableDate }}</span>
+        <span class="byline-strip__sep"></span>
+        <span>{{ content | readtime }}</span>
       </div>
     </div>
+    {% if displayWord %}
+    <div class="rail" aria-hidden="true">
+      <div class="rail__stack">
+        <div class="rail__label">{{ section }}</div>
+        <div class="rail__line"></div>
+        <div class="rail__sub">{{ dateline or site.founded }}</div>
+      </div>
+      <div class="rail__word">{{ displayWord }}</div>
+    </div>
+    {% endif %}
+  </div>
 
-    {% if image %}<img src="{{ image }}" alt="" style="border-radius:4px;margin-bottom:24px">{% endif %}
+  {% if image %}
+  <figure style="margin-bottom:clamp(32px,3.4vw,52px)">
+    <div class="mount mount--21x9">
+      <div class="mount__well"><img src="{{ image }}" alt="{{ imageAlt or '' }}"></div>
+    </div>
+    {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
+  </figure>
+  {% endif %}
 
-    <div class="article-body">
+  <div class="cols">
+    <div class="cols__main prose">
       {{ content | safe }}
     </div>
-  </article>
 
-  <aside class="sidebar">
-    <div class="ad-slot" style="height:250px">
-      <span>Advertisement</span><span>300 × 600</span>
-    </div>
-  </aside>
-</main>
+    <aside class="cols__aside">
+      <div>
+        <h2 class="rule-head">More from {{ section }}</h2>
+        <div class="sidelist">
+          {% for post in collections.articles | reverse %}
+            {% if post.data.section == section and post.url != page.url %}
+              {% if loop.index0 < 4 %}
+              <a href="{{ post.url }}">
+                <div class="sidelist__title">{{ post.data.title }}</div>
+                <div class="sidelist__meta">{{ post.date | timeAgo }}</div>
+              </a>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="rule-head">Explainers</h2>
+        <div class="sidelist">
+          {% for ex in collections.explainers %}
+            {% if loop.index0 < 3 %}
+            <a href="{{ ex.url }}">
+              <div class="kicker" style="margin-bottom:6px">No. {{ ex.data.number }}</div>
+              <div class="sidelist__title">{{ ex.data.title }}</div>
+            </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">The daily brief</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg);margin-bottom:18px">Three stories that matter across the Pacific, every weekday morning. Free.</p>
+        <a href="/subscribe/" class="btn btn--light">Sign up</a>
+      </div>
+    </aside>
+  </div>
+
+</article>

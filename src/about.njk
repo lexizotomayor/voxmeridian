@@ -1,0 +1,102 @@
+---
+layout: base.njk
+title: About
+dek: Who we are, how we source what we publish, and where software helps.
+permalink: /about/
+eleventyExcludeFromCollections: true
+---
+<div class="shell page">
+
+  <div class="hero">
+    <div>
+      <div class="chip">About</div>
+      <h1 class="hero__title">A newsroom reporting the Pacific from inside it</h1>
+      <p class="hero__dek">Vox Meridian covers business, security, diplomacy, and politics across the Pacific and the United States — from bureaus in the region, not from a desk in another hemisphere.</p>
+    </div>
+    <div class="rail" aria-hidden="true">
+      <div class="rail__stack">
+        <div class="rail__label">{{ site.founded }}</div>
+        <div class="rail__line"></div>
+        <div class="rail__sub">Independent</div>
+      </div>
+      <div class="rail__word">about</div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="cols__main prose">
+      <p>We started Vox Meridian because the decisions that shape this region are reported late, thinly, or from somewhere else. A basing agreement signed in Port Moresby moves fuel prices in Guam and shipping cover in Taipei, and no single newsroom was following that thread end to end.</p>
+
+      <p>We are small and we intend to stay useful rather than large. Everything on this site is either reported by a named correspondent, summarised from another newsroom with credit, or read directly out of a primary document. Which of those you are looking at is always stated on the page.</p>
+
+      {% if site.preview %}
+      <h2 id="preview">Where we are right now</h2>
+      <p>This site is live as a demonstration. Vox Meridian is being built in the open: the design, the templates, the section structure, and the publishing workflow are finished and working, while the newsroom and the business behind it — funding, hires, and the publisher's chair — are still being set up. What you are reading those finished templates with, in places, is placeholder text.</p>
+      <p>Any page carrying a terracotta <strong>Placeholder</strong> banner is a layout sample: the headline and paragraphs are stand-ins so the page has something to lay out. It is not reporting, no source was contacted, and it will be replaced or deleted rather than quietly edited into a real story.</p>
+      <p>Everything else on the site is what it says it is. Every item in The Wire is a real story another newsroom published: we summarise it in our own words, name them, and link straight to their article — we never reproduce their reporting, and the outlets we read are listed and linked so you can go to them directly. Explainers are built from primary documents. While the demo notice is up we also ask search engines not to index the site, so placeholder pages cannot surface as if they were published reporting.</p>
+      <p>We could have launched quietly with three real stories and looked thin. We would rather show you the whole paper working, with every stand-in marked as one, and fill it in the open. If you are reading this as a prospective investor, partner, or correspondent: <a href="/contact/">that is exactly who this build is for</a>.</p>
+      {% endif %}
+
+      <h2 class="rule-head" style="margin:44px 0 0">How our pages are made</h2>
+      <div class="glossary">
+        {% for s in sourcing %}
+        <div class="glossary__row" style="grid-template-columns:minmax(104px,auto) minmax(0,1fr)">
+          <div class="kicker">{{ s.label }}</div>
+          <div>
+            <div style="font-size:17px;line-height:1.5;font-weight:600;color:var(--body);margin-bottom:6px">{{ s.what }}</div>
+            <div class="glossary__plain">{{ s.how }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="panel" style="margin-top:34px;border-left:9px solid var(--terra-light)">
+        <div class="kicker kicker--light" style="margin-bottom:12px">Where software helps, and where it does not</div>
+        <p style="font-size:17px;line-height:1.62;color:var(--ink-dark-bg);margin-bottom:14px">We use AI tools for editing work — tightening a headline, drafting a plain-language pass over a document we have read, checking a summary against its source. Every piece is edited and signed off by a named person before it publishes.</p>
+        <p style="font-size:17px;line-height:1.62;color:var(--areia);margin:0">We do not publish AI-generated reporting. No story on this site describes an interview that did not happen, a document nobody read, or a place no correspondent went. If we ever get that wrong, it is a correction at the top of the page, not a footnote.</p>
+      </div>
+
+      <h2>Corrections</h2>
+      <p>We correct at the top of the story, dated, saying what was wrong. Corrections are reviewed the same day, every day. Write to <a href="mailto:corrections@voxmeridian.online">corrections@voxmeridian.online</a>.</p>
+
+      <h2>Who decides what runs</h2>
+      <p>The Editor-in-Chief does, and nobody above her — including the founder, who reports to her like any other correspondent on the stories he files. A publisher will be appointed to handle the business side; until then it is handled around the newsroom rather than through it.</p>
+
+      <h2>Who pays for this</h2>
+      <p>Reader subscriptions and a small amount of regional advertising. No proprietor, no government money, no funding from any party to the stories we cover. If that ever changes, it will be disclosed here before it appears anywhere else.</p>
+    </div>
+
+    <aside class="cols__aside">
+      <div>
+        <h2 class="rule-head">The newsroom</h2>
+        <div class="staff">
+          {% for s in staff %}
+          <div class="staff__row">
+            <div class="mount mount--sm staff__photo">
+              <div class="mount__well" style="aspect-ratio:1/1"><img src="{{ s.photo }}" alt="{{ s.name }}"></div>
+            </div>
+            <div>
+              <div class="staff__name">{{ s.name }}</div>
+              <div class="staff__role">{{ s.role }}</div>
+              <div class="staff__bio">{{ s.bio }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">Bureaus</div>
+        <div class="bureaus">
+          {% for b in bureaus %}
+          <div class="bureaus__row">
+            <span class="bureaus__city">{{ b.city }}</span>
+            <span class="bureaus__beat">{{ b.beat }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</div>

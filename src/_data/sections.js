@@ -1,9 +1,2 @@
-module.exports = [
-  "Business",
-  "Security & Diplomacy",
-  "Politics",
-  "Pacific",
-  "US",
-  "Opinion",
-  "Explainers",
-];
+// Topic sections that get their own generated page, in nav order.
+module.exports = ["Business", "Security & Diplomacy", "Politics"];

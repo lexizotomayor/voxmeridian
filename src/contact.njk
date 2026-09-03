@@ -1,35 +1,98 @@
 ---
 layout: base.njk
 title: Contact
-permalink: "/contact/"
+dek: Tips, corrections, pitches, and advertising — who to write to and what to expect.
+permalink: /contact/
+eleventyExcludeFromCollections: true
 ---
-<main>
-  <div class="content-col" style="max-width:900px">
-    <span class="kicker">Get in Touch</span>
-    <h1 class="headline">Contact Vox Meridian</h1>
-    <p class="dek">Have a tip, a correction, or a question? Reach the right desk below.</p>
+<div class="shell page">
 
-    <div class="grid" style="margin-top:24px">
-      <div style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:20px;overflow-wrap:anywhere;min-width:0">
-        <h3 style="margin-top:0">News Tips</h3>
-        <p style="color:var(--ink-soft)">Send story tips or leads to our editorial desk.</p>
-        <a href="mailto:tips@voxmeridian.online" style="color:var(--maroon);font-weight:700">tips@voxmeridian.online</a>
+  <div class="hero">
+    <div>
+      <div class="chip">Contact</div>
+      <h1 class="hero__title">Every message is read by an editor</h1>
+      <p class="hero__dek">Not a filter, not a queue nobody checks. Tips and corrections go to the top of the pile.</p>
+    </div>
+    <div class="rail" aria-hidden="true">
+      <div class="rail__stack">
+        <div class="rail__label">Four bureaus</div>
+        <div class="rail__line"></div>
+        <div class="rail__sub">Someone replies</div>
       </div>
-      <div style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:20px;overflow-wrap:anywhere;min-width:0">
-        <h3 style="margin-top:0">Corrections</h3>
-        <p style="color:var(--ink-soft)">Report an error in one of our published stories.</p>
-        <a href="mailto:corrections@voxmeridian.online" style="color:var(--maroon);font-weight:700">corrections@voxmeridian.online</a>
-      </div>
-      <div style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:20px;overflow-wrap:anywhere;min-width:0">
-        <h3 style="margin-top:0">Advertise</h3>
-        <p style="color:var(--ink-soft)">Reach our readers across the Pacific and US.</p>
-        <a href="mailto:ads@voxmeridian.online" style="color:var(--maroon);font-weight:700">ads@voxmeridian.online</a>
-      </div>
-      <div style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:20px;overflow-wrap:anywhere;min-width:0">
-        <h3 style="margin-top:0">General Inquiries</h3>
-        <p style="color:var(--ink-soft)">Anything else — we'll route it to the right desk.</p>
-        <a href="mailto:hello@voxmeridian.online" style="color:var(--maroon);font-weight:700">hello@voxmeridian.online</a>
-      </div>
+      <div class="rail__word">write</div>
     </div>
   </div>
-</main>
+
+  <div class="cols">
+    <div class="cols__main">
+
+      <h2 class="rule-head">Desks</h2>
+      <div class="defs">
+        {% for d in desks %}
+        <div class="defs__item">
+          <div class="defs__name">{{ d.name }}</div>
+          <div class="defs__what" style="margin-bottom:5px"><a href="mailto:{{ d.email }}" style="color:var(--terra-dark)">{{ d.email }}</a></div>
+          <div class="defs__what">{{ d.what }}</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <section class="panel panel--split" style="margin-top:clamp(34px,3.6vw,50px)">
+        <div class="panel__rail">Write to us</div>
+        <div>
+          <h2 class="panel__title">Send it here</h2>
+          <p class="panel__text">Use this for anything that does not need a specific desk. If it is sensitive, read the note in the sidebar first.</p>
+          <form name="contact" method="POST" action="/thanks/?form=contact" data-netlify="true" netlify-honeypot="bot-field">
+            <p class="vh"><label>Do not fill this in <input name="bot-field"></label></p>
+            <div class="field-row">
+              <label class="field"><span class="field__label">Your name</span><input type="text" name="name" required></label>
+              <label class="field"><span class="field__label">Email</span><input type="email" name="email" required></label>
+            </div>
+            <label class="field"><span class="field__label">Subject</span><input type="text" name="subject" required></label>
+            <label class="field"><span class="field__label">Your message</span><textarea name="message" rows="5" required></textarea></label>
+            <button type="submit" class="btn btn--light">Send the message</button>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <aside class="cols__aside">
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">If it is sensitive</div>
+        <p style="font-size:15px;line-height:1.6;color:var(--ink-dark-bg);margin-bottom:14px">Reach us on Signal at <span style="color:var(--areia);font-weight:700">+1 670 555 0142</span> from a personal device — never a work phone, work laptop, or work email.</p>
+        <p style="font-size:15px;line-height:1.6;color:var(--bege-areia)">Do not send documents through the form above. Ask us for a secure route first.</p>
+      </div>
+
+      <div>
+        <h2 class="rule-head">What to expect</h2>
+        <div class="sidelist">
+          <div style="padding:15px 0;border-bottom:1px solid var(--hairline)">
+            <div class="sidelist__title">Corrections</div>
+            <div class="sidelist__meta">Same day, every day</div>
+          </div>
+          <div style="padding:15px 0;border-bottom:1px solid var(--hairline)">
+            <div class="sidelist__title">Tips and pitches</div>
+            <div class="sidelist__meta">Two working days</div>
+          </div>
+          <div style="padding:15px 0;border-bottom:1px solid var(--hairline)">
+            <div class="sidelist__title">Advertising</div>
+            <div class="sidelist__meta">Rate card on request</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="kicker kicker--light" style="margin-bottom:12px">Bureaus</div>
+        <div class="bureaus">
+          {% for b in bureaus %}
+          <div class="bureaus__row">
+            <span class="bureaus__city">{{ b.city }}</span>
+            <span class="bureaus__beat">{{ b.beat }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</div>

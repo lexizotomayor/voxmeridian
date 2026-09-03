@@ -1,58 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title }} · {{ site.name }}</title>
-  <meta name="description" content="{{ description or site.tagline }}">
-  <link rel="stylesheet" href="/css/style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if title %}{{ title }} · {{ site.name }}{% else %}{{ site.name }} · {{ site.tagline }}{% endif %}</title>
+<meta name="description" content="{{ dek or site.description }}">
+<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+{% if not site.indexable %}<meta name="robots" content="noindex, nofollow">{% endif %}
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ title or site.name }}">
+<meta property="og:description" content="{{ dek or site.description }}">
+<meta property="og:type" content="{% if layout == 'article.njk' %}article{% else %}website{% endif %}">
+<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+{% if image %}<meta property="og:image" content="{{ site.url }}{{ image }}">{% endif %}
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="{{ site.name }}" href="/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <div class="utility-bar">
-    <div class="inner">
-      <span>{{ page.date | readableDate }}</span>
-      <div style="display:flex;gap:20px">
-        <a href="/newsletter/">Newsletter</a>
-        <a href="/support/">Support Vox Meridian</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <filter id="tornEdge">
+    <feTurbulence type="fractalNoise" baseFrequency="0.026 0.012" numOctaves="4" seed="7" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="11" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="tornEdgeSmall">
+    <feTurbulence type="fractalNoise" baseFrequency="0.05 0.03" numOctaves="3" seed="3" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<a href="#main" class="vh">Skip to the main story</a>
+
+{% if site.preview %}
+<div class="previewbar">
+  <div class="shell previewbar__inner">
+    <span class="previewbar__tag">For demo use</span>
+    <span class="previewbar__text">{{ site.previewNote }}</span>
+    <a href="/about/#preview" class="previewbar__link">What this means</a>
+    <span class="previewbar__credit">Design &copy; {{ build.date | yearOnly }} Lexi Zotomayor</span>
+  </div>
+</div>
+{% endif %}
+
+<header class="masthead">
+  <div class="shell masthead__bar">
+    <a href="/" class="wordmark" title="{{ site.name }} home"><em>vox</em> meridian</a>
+    <nav class="topnav" aria-label="Sections">
+      {% for item in nav %}
+      <a href="{{ item.url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>{{ item.name }}</a>
+      {% endfor %}
+    </nav>
+  </div>
+</header>
+
+<div class="datebar">
+  <div class="shell datebar__inner">
+    <div class="datebar__date">{{ build.date | readableDate }} · {{ site.founded }}</div>
+    <div class="ticker" aria-label="Market ticker">
+      <div class="ticker__track">
+        {% for t in ticker %}
+        <span class="ticker__item">
+          <span class="ticker__label">{{ t.label }}</span>
+          <span class="ticker__val">{{ t.value }}</span>
+          <span class="ticker__move--{{ t.dir }}">{{ t.move }}</span>
+        </span>
+        {% endfor %}
       </div>
     </div>
   </div>
+</div>
 
-  <header class="site-header">
-    <a href="/"><img class="logo" src="/images/vox-logo.png" alt="{{ site.name }}"></a>
-    <nav class="primary-nav">
-      <a href="/">Home</a>
-      {% for sec in sections %}
-        <a href="/section/{{ sec | slugify }}/">{{ sec }}</a>
-      {% endfor %}
-      <a href="/contact/">Contact</a>
-    </nav>
-  </header>
+{% if sample %}
+<div class="samplebar">
+  <div class="shell samplebar__inner">
+    <span class="samplebar__tag">Placeholder</span>
+    <span class="samplebar__text">This page is a layout sample, not reporting. The design is real; the words are stand-ins while the newsroom fills the paper.</span>
+  </div>
+</div>
+{% endif %}
 
-  <div style="display:flex;justify-content:center;padding:18px 24px 0">
-    <div class="ad-slot" style="width:100%;max-width:728px;height:90px">
-      <span>Advertisement</span><span>728 × 90</span>
+{% block tabs %}{% endblock %}
+
+<main id="main">
+{{ content | safe }}
+</main>
+
+<footer class="sitefoot">
+  <div class="shell sitefoot__inner">
+    <div>
+      <div class="wordmark"><em>vox</em> meridian</div>
+      <div class="sitefoot__tag">{{ site.tagline }}</div>
+    </div>
+    <div class="sitefoot__col">
+      <div class="sitefoot__links">
+        <a href="/about/">About</a>
+        <a href="/subscribe/">Subscribe</a>
+        <a href="/wire/">The Wire</a>
+        <a href="/rss/">RSS</a>
+        <a href="/contact/">Contact</a>
+      </div>
+      <div class="sitefoot__legal">&copy; {{ build.date | yearOnly }} Vox Meridian Publications LLC. All rights reserved.</div>
+      <div class="sitefoot__design">Design &copy; {{ build.date | yearOnly }} Lexi Zotomayor</div>
     </div>
   </div>
+</footer>
 
-  {{ content | safe }}
-
-  <footer class="site-footer">
-    <img class="logo" src="/images/vox-logo.png" alt="{{ site.name }}">
-    <div>© {{ page.date | yearOnly }} {{ site.name }}. {{ site.tagline }}.</div>
-  </footer>
-
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
-    }
-  </script>
 </body>
 </html>
