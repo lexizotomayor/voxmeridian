@@ -1,6 +1,7 @@
 ---
 layout: base.njk
 eleventyExcludeFromCollections: true
+hideMasthead: true
 ---
 {# The lead is our own work: newest reported story if there is one, otherwise the
    newest explainer. The homepage never leads with someone else's reporting. #}
@@ -20,9 +21,16 @@ eleventyExcludeFromCollections: true
           {% if lead.date %} · {{ lead.date | timeAgo }}{% endif %}
         </div>
       </div>
-      <div class="nameplate" aria-hidden="true">
-        <div class="nameplate__word"><em>vox</em><span class="nameplate__word-sub">meridian</span></div>
-        <div class="nameplate__tag">{{ site.tagline }}</div>
+      <div class="nameplate">
+        <nav class="nameplate__nav" aria-label="Sections">
+          {% for item in nav %}
+          <a href="{{ item.url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>{{ item.name }}</a>
+          {% endfor %}
+        </nav>
+        <div class="nameplate__mark" aria-hidden="true">
+          <div class="nameplate__word"><em>vox</em><span class="nameplate__word-sub">meridian</span></div>
+          <div class="nameplate__tag">{{ site.tagline }}</div>
+        </div>
       </div>
     </div>
 

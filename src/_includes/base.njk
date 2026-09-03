@@ -46,6 +46,7 @@
 </div>
 {% endif %}
 
+{% if not hideMasthead %}
 <header class="masthead">
   <div class="shell masthead__bar">
     <a href="/" class="wordmark" title="{{ site.name }} home"><em>vox</em> meridian</a>
@@ -56,6 +57,7 @@
     </nav>
   </div>
 </header>
+{% endif %}
 
 <div class="datebar">
   <div class="shell datebar__inner">
